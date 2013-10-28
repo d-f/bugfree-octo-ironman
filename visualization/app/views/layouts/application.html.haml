@@ -3,6 +3,7 @@
 %html
   %head
   %title Visualization
+  %meta{:content => "width=device-width, initial-scale=1.0, user-scalable=no", :name => "viewport"}
   = stylesheet_link_tag "application", media: "all"
   = csrf_meta_tags
 
@@ -10,6 +11,12 @@
     %header
       .logo
         AppName
+
+      #optional-dropdown
+        %ul
+          %li
+            %a
+              = icon "&#xe000;"
 
       #mini-nav
         %ul
@@ -19,6 +26,15 @@
 
 
     .main-container
+      #mainnav
+        %ul
+          %li.active
+            %span.current-arrow
+            %a
+              .icon
+                = icon "&#xe0a2;"
+              Dashboard
+
       .dashboard-wrapper
         .row.page-title
           %h2 Page Title
