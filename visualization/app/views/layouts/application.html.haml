@@ -7,5 +7,22 @@
   = csrf_meta_tags
 
   %body
-    = yield
+    %header
+      .logo
+        AppName
+
+      #mini-nav
+        %ul
+          %li
+            = render "shared/logged_in_user"
+
+
+
+    .main-container
+      .dashboard-wrapper
+        .row.page-title
+          %h2 Page Title
+
+        = yield
+
     = javascript_include_tag "application"
