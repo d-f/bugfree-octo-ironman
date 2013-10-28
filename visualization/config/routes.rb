@@ -54,5 +54,5 @@ Visualization::Application.routes.draw do
   #     resources :products
   #   end
 
-  root 'example#index'
+  root 'widget#index'
 end
