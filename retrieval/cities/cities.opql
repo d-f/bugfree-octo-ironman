@@ -1,0 +1,7 @@
+[timeout:1800];
+area
+	[name="Deutschland"]
+	[admin_level];
+node(area)
+	[place];
+out;

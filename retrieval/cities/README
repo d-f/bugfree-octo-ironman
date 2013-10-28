@@ -1,0 +1,20 @@
+# OSM cities
+Mit diesen Scripts lassen sich alle Städtenamen aus OpenStreetMap mithilfe der [Overpass-API](http://overpass-api.de/) exportieren und dann in eine MySQL-Datenbank laden.
+
+## `import_osm_cities.sql`
+	Lädt die OSM-XML Datei erst in temporäre Tabellen und transformiert die Städtenamen dann in die Tabelle `cities`. Diese beinhaltet die folgenden Spalten:
+	* Die `osm_id` als Referenz auf den OSM-Datensatz,
+	* den Namen der Stadt (`name`),
+	* die Größe der Stadt (`place`), welche unteschieden wird in:
+		* `city:` über 100.000 Einwohner
+		* `town`: über 10.000 Einwohner
+		* `village`: unter 10.000 Einwohner
+		* `hamlet`: unter 100 Einwohner
+	* die Geokoordinate als Längen- und Breitengrad in [WSG84][wsg84] (`lat`, `lon`)
+
+Damit der Import in MySQL funktioniert muss
+1. mysqld mit der Option `local-infile=1` gestartet sein,
+2. die Optionen für temporären Tabellen groß genug sein”: 1024M für `tmp_table_size` und `max_heap_table_size` reichen aus
+
+
+[wsg84]: http://en.wikipedia.org/wiki/World_Geodetic_System
