@@ -4,26 +4,26 @@ latex footer:       x3-paper-end
 
 # Architekturbeschreibung
 
-Die Architektur des Prototype besteht aus drei Hauptkomponenten: Data Extraction, Data Analysis und Visualization, welche außerdem der internen Aufteilung der Gruppe entsprechen. Diese Aufteilung ermöglicht den Teams die Komponenten der jeweils anderen Teams als Blackbox zu betrachten, sodass eine Abstimmung lediglich über die Funktionalität (was wird umgesetzt), nicht aber über die konkrete Implementation (wie wird es umgesetzt) der Komponenten erfolgen muss.
+Die Architektur des Prototype besteht aus drei Hauptkomponenten: Data Extraction, Data Analysis und Visualization, welche außerdem der internen Aufteilung der Gruppe entsprechen. Diese Aufteilung ermöglicht den Teams die Komponenten der jeweils anderen Teams als Blackbox zu betrachten, sodass eine Abstimmung lediglich über die Funktionalität (was wird umgesetzt) und die Schnitstellen untereinander, nicht aber über die konkrete Implementation (wie wird es umgesetzt) der Komponenten erfolgen muss.
 
 Im folgenden wird zuerst die Schnittstelle zwischen den Komponenten, und anschließend jede Komponente einzeln beschrieben.
 
 
 ## Komponentenschnittstelle
 
-Für den Prototyp des Systems wird als zentrale Schnittstelle zwischen den Komponenten eine einfach relationale Datenbank genutzt (MySQL). Diese Designentscheidung wurde getroffen, um eine möglichst einfache Integration der Komponenten zu ermöglichen, und somit den Fokus auf die für den Prototypen relevanteren Themen legen zu können, deren Komplexität innerhalb der Komponenten liegen. Aus der Verwendung einer Datenbank als Schnittstelle ergibt sich der Nachteil, dass die Analyse- sowie die Visualisierungskomponente die Datenbank konstant nach neuen Daten Fragen muss (polling). Als Ergänzung zur Datenbank könnte man hier eine Message Queue einsetzen.
+Für den Prototyp des Systems wird als zentrale Schnittstelle zwischen den Komponenten eine einfach relationale Datenbank genutzt (MySQL). Diese Designentscheidung wurde getroffen, um eine möglichst einfache Integration der Komponenten zu ermöglichen, und somit den Fokus auf die für den Prototypen relevanteren Themen legen zu können, wobei die Komplexität innerhalb der Komponenten liegen. Aus der Verwendung einer Datenbank als Schnittstelle ergibt sich der Nachteil, dass die Analyse- sowie die Visualisierungskomponente die Datenbank konstant nach neuen Daten Fragen muss (polling). Als Ergänzung zur Datenbank könnte man hier eine Message Queue und einen Cache für Abfragen einsetzen.
 
 
 
 ## Data Extraction
 
-Die Data Extraction Komponente bildet die Schnittstelle zwischen den Sozialen Netzen welche wir als Datenquellen benutzen, und unserem System. Für die einzelnen Netzwerke wird hier ein entsprechender Adapter verwendet, welcher generische Daten extrahiert, und außerdem Netzwerk-spezifische Daten (bei Twitter bspw. Retweets) gesondert ablegt, damit diese für die Analyse nicht verloren gehen. Die Adapter persistieren die Daten über das `IPersistenceManager` Interface des `PersistenceManager`s.
+Die Data Extraction Komponente bildet die Schnittstelle zwischen den sozialen Netzwerken, unserer primäre Datenquelle, und dem Rest des Systems. Für die einzelnen Netzwerke wird hier ein entsprechender Adapter verwendet, welcher generische Daten extrahiert und außerdem Netzwerk-spezifische Daten (bei Twitter bspw. Retweets oder Geolocation) gesondert ablegt, damit diese für die Analyse nicht verloren gehen. Die Adapter persistieren die Daten über das `IPersistenceManager` Interface des `PersistenceManager`s in der MySQL-Datenbank.
 
 
 
 ## Data Analysis
 
-In der Data Analysis Komponente werden die extrahierten Daten zu Informationen konsolidiert. Hier gibt es ebenfalls für jedes angebundene soziale Netz eine `Analyser` Komponente, welche die Daten in ein für den `InformationExtractor` nutzbares Format bringen, welche er über die `IDataSource` Schnittstelle abfragt. Der `InformationExtractor` verwendet anschließend weitere Analyse-interne Komponenten um Informationen aus den Daten zu gewinnen. Für den Prototyp sind hier ein `KeywordFinder` angedacht, welcher mögliche Schlüsselworte identifiziert, sowie ein `Categorizer`, welcher die Daten in Kategorien einteilt (bspw. Hilfegesuch, Pressemitteilung, ...).
+In der Data Analysis Komponente werden die extrahierten Daten zu Informationen konsolidiert. Hier gibt es wie bei der *Data Extraction* für jedes angebundene soziale Netz eine `Analyser` Komponente, welche die Daten in ein für den `InformationExtractor` nutzbares Format transformiert, damit diese über die `IDataSource` Schnittstelle abgefragt werden können. Der `InformationExtractor` verwendet anschließend weitere Analyse-interne Komponenten um Informationen aus den Daten zu gewinnen. Für den Prototyp sind hier ein `KeywordFinder` und `Categorizer` angedacht. Der `KeywordFinder` soll dabei möglichst alle wichtigen Schlüsselworte identifiziert können. Der `Categorizer` soll die Daten in verschiedenen Kategorien, wie bspw. Hilfegesuch, Pressemitteilung, etc. einteilen.
 
 
 <!--\newpage-->
