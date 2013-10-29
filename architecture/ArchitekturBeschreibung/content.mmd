@@ -1,0 +1,34 @@
+Base Header Level:  3
+latex input:        document-info
+latex footer:       x3-paper-end
+
+# Architekturbeschreibung
+
+Die Architektur des Prototype besteht aus drei Hauptkomponenten: Data Extraction, Data Analysis und Visualization, welche außerdem der internen Aufteilung der Gruppe entsprechen. Diese Aufteilung ermöglicht den Teams die Komponenten der jeweils anderen Teams als Blackbox zu betrachten, sodass eine Abstimmung lediglich über die Funktionalität (was wird umgesetzt), nicht aber über die konkrete Implementation (wie wird es umgesetzt) der Komponenten erfolgen muss.
+
+Im folgenden wird zuerst die Schnittstelle zwischen den Komponenten, und anschließend jede Komponente einzeln beschrieben.
+
+
+## Komponentenschnittstelle
+
+Für den Prototyp des Systems wird als zentrale Schnittstelle zwischen den Komponenten eine einfach relationale Datenbank genutzt (MySQL). Diese Designentscheidung wurde getroffen, um eine möglichst einfache Integration der Komponenten zu ermöglichen, und somit den Fokus auf die für den Prototypen relevanteren Themen legen zu können, deren Komplexität innerhalb der Komponenten liegen. Aus der Verwendung einer Datenbank als Schnittstelle ergibt sich der Nachteil, dass die Analyse- sowie die Visualisierungskomponente die Datenbank konstant nach neuen Daten Fragen muss (polling). Als Ergänzung zur Datenbank könnte man hier eine Message Queue einsetzen.
+
+
+
+## Data Extraction
+
+Die Data Extraction Komponente bildet die Schnittstelle zwischen den Sozialen Netzen welche wir als Datenquellen benutzen, und unserem System. Für die einzelnen Netzwerke wird hier ein entsprechender Adapter verwendet, welcher generische Daten extrahiert, und außerdem Netzwerk-spezifische Daten (bei Twitter bspw. Retweets) gesondert ablegt, damit diese für die Analyse nicht verloren gehen. Die Adapter persistieren die Daten über das `IPersistenceManager` Interface des `PersistenceManager`s.
+
+
+
+## Data Analysis
+
+In der Data Analysis Komponente werden die extrahierten Daten zu Informationen konsolidiert. Hier gibt es ebenfalls für jedes angebundene soziale Netz eine `Analyser` Komponente, welche die Daten in ein für den `InformationExtractor` nutzbares Format bringen, welche er über die `IDataSource` Schnittstelle abfragt. Der `InformationExtractor` verwendet anschließend weitere Analyse-interne Komponenten um Informationen aus den Daten zu gewinnen. Für den Prototyp sind hier ein `KeywordFinder` angedacht, welcher mögliche Schlüsselworte identifiziert, sowie ein `Categorizer`, welcher die Daten in Kategorien einteilt (bspw. Hilfegesuch, Pressemitteilung, ...).
+
+
+<!--\newpage-->
+## Visualization
+
+Die Visualization Komponente ist dafür zuständig die von der Analyse gewonnen Informationen verständlich und interaktiv darzustellen. Ziel ist es, den in den Katastrophenschutz involvierten Behörden einen Überblick über die Situation zu verschaffen, wie sie sich in den sozialen Netzen wiederspiegelt.
+
+Um möglichst einfachen Zugriff auf die Oberfläche zu ermöglichen läuft diese als Webanwendung, womit sie auch über Smartphones und Tablets aufgerufen werden kann. Entsprechend gibt es zwei Komponenten, jene die im Browser ausgeführt wird (Dashboard Client) und jene die auf dem Server ausgeführt wird (Dashboard Server).
