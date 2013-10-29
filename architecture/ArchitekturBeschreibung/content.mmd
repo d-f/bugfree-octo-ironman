@@ -29,6 +29,16 @@ In der Data Analysis Komponente werden die extrahierten Daten zu Informationen k
 <!--\newpage-->
 ## Visualization
 
-Die Visualization Komponente ist dafür zuständig die von der Analyse gewonnen Informationen verständlich und interaktiv darzustellen. Ziel ist es, den in den Katastrophenschutz involvierten Behörden einen Überblick über die Situation zu verschaffen, wie sie sich in den sozialen Netzen wiederspiegelt.
+Die Visualization Komponente ist dafür zuständig die von der Analyse gewonnen Informationen verständlich und interaktiv darzustellen. Ziel ist es, den in den Katastrophenschutz involvierten Behörden vor allem einen Überblick über die aktuelle Situation zu verschaffen, wie sie sich in den sozialen Netzen wiederspiegelt.
 
-Um möglichst einfachen Zugriff auf die Oberfläche zu ermöglichen läuft diese als Webanwendung, womit sie auch über Smartphones und Tablets aufgerufen werden kann. Entsprechend gibt es zwei Komponenten, jene die im Browser ausgeführt wird (Dashboard Client) und jene die auf dem Server ausgeführt wird (Dashboard Server).
+Die Visualisierung besteht aus zwei Komponenten, jene die im Browser ausgeführt wird (Dashboard Client) und jene die auf dem Server ausgeführt wird (Dashboard Server).
+Um möglichst einfachen Zugriff auf die Benutzeroberfläche zu ermöglichen läuft diese als Webanwendung, womit sie auch über Smartphones und Tablets aufgerufen werden kann.
+Der Dashboard Client soll die verschiedenen Informationen dabei in einzelnen Ansichten darstellen. Dabei liegt der Fokus darauf die Fragen, `wann` ist `was` `wo` passiert?, zu beantworten.
+
+  * Das “wann” wird mithilfe einer Auswahl des Benutzers getroffen. Der Benutzer wählt dafür einen bestimmten Zeitpunkt bzw. einen Zeitraum (bspw. heute / jetzt, gestern, letzte Woche, heute 12:00-13:30 Uhr) aus. Durch die Auswahl werden dann die durch die Analyse gewonnen Daten visualisiert.
+  * “Was” zum ausgewählten Zeitraum passiert wird durch die kategorisierten Daten in einem Streamgraphen dargestellt.
+  * Weiterhin wird mithilfe einer interaktiven Karte der geographische Bezug der Daten visualisiert, um das “wo” zu beantworten.
+
+Durch diese miteinander verbundenen Ansichten soll damit ein Lagebild zu einem bestimmten Kontext aus verschiedenen Sichtweisen schnell vermittelbar sein.
+
+Der Dashboard Server stellt die Webanwendung bereit und liefert die für den Client erforderlichen Daten aus. Dabei greift dieser auf die  Datenbank zu, welche durch die Data Analysis Komponente erzeugt wurde. 
