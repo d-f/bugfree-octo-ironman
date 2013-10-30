@@ -11,15 +11,14 @@ Im folgenden wird zuerst die Schnittstelle zwischen den Komponenten, und anschli
 
 ## Komponentenschnittstelle
 
-Für den Prototyp des Systems wird als zentrale Schnittstelle zwischen den Komponenten eine einfach relationale Datenbank genutzt (MySQL). Diese Designentscheidung wurde getroffen, um eine möglichst einfache Integration der Komponenten zu ermöglichen, und somit den Fokus auf die für den Prototypen relevanteren Themen legen zu können, wobei die Komplexität innerhalb der Komponenten liegt. Aus der Verwendung einer Datenbank als Schnittstelle ergibt sich der Nachteil, dass die Analyse- sowie die Visualisierungskomponente die Datenbank konstant nach neuen Daten Fragen muss (polling). Als Ergänzung zur Datenbank könnte man hier eine Message Queue und einen Cache für Abfragen einsetzen.
+Für den Prototyp des Systems wird als zentrale Schnittstelle zwischen den Komponenten eine einfach relationale Datenbank genutzt (MySQL). Diese Designentscheidung wurde getroffen, um eine möglichst einfache Integration der Komponenten zu ermöglichen, und somit den Fokus auf die für den Prototypen relevanteren Themen legen zu können, wobei die Komplexität innerhalb der Komponenten liegt. Aus der Verwendung einer Datenbank als Schnittstelle ergibt sich der Nachteil, dass die Analyse- sowie die Visualisierungskomponente die Datenbank konstant nach neuen Daten Fragen muss (polling) um in Echtzeit zu arbeiten. Als Ergänzung zur Datenbank könnte man hier eine Message Queue und einen Cache für Abfragen einsetzen.
 
+Diese zentrale Datenbank wird hier auch Datawarehouse angesehen, worauf alle Komponenten operieren. Dabei ist die *Data Extraction* für das sammeln der Basisdaten und Metadaten zuständig. Mithilfe von ETL sind die gesammelten Daten dann in das Datawarehouse Modell zu übertragen (siehe [fig_dwh_starschema][]). In der *Data Anlysis* Komponente werden dann mit OLAP und Data-Mining aus den Daten wertvolle Informationen erzeugt. Diese können dann in der *Visualisation* abgefragt und dargestellt werden.
 
 
 ## Data Extraction
 
-Die Data Extraction Komponente bildet die Schnittstelle zwischen den sozialen Netzwerken, unserer primäre Datenquelle, und dem Rest des Systems. Für die einzelnen Netzwerke wird hier ein entsprechender Adapter verwendet, welcher generische Daten extrahiert und außerdem Netzwerk-spezifische Daten (bei Twitter bspw. Retweets oder Geolocation) gesondert ablegt, damit diese für die Analyse nicht verloren gehen. Die Adapter persistieren die Daten über das `IPersistenceManager` Interface des `PersistenceManager`s.
-
-
+Die Data Extraction Komponente bildet die Schnittstelle zwischen den sozialen Netzwerken, unserer primäre Datenquelle, und dem Rest des Systems. Für die einzelnen Netzwerke wird hier ein entsprechender Adapter verwendet, welcher generische Daten extrahiert und außerdem Netzwerk-spezifische Daten (bei Twitter bspw. Retweets oder Geolocation) gesondert ablegt, damit diese für die Analyse nicht verloren gehen. Die Adapter persistieren die Daten über das `IPersistenceManager` Interface des `PersistenceManager`s. Neben den Basisdaten werden hier noch weitere Metadaten gesammelt, die in die Analyse einbezogen werden können. Hier haben wir z. B. eine Städteliste mit den zugehörigen Georeferenzen.
 
 ## Data Analysis
 
@@ -42,3 +41,7 @@ Der Dashboard Client soll die verschiedenen Informationen dabei in einzelnen Ans
 Durch diese miteinander verbundenen Ansichten soll damit ein Lagebild zu einem bestimmten Kontext aus verschiedenen Sichtweisen schnell vermittelbar sein.
 
 Der Dashboard Server stellt die Webanwendung bereit und liefert die für den Client erforderlichen Daten aus. Dabei greift dieser auf die  Datenbank zu, welche durch die Data Analysis Komponente erzeugt wurde. 
+
+
+
+[fig_dwh_starschema]: star_schema.png "Datawarehouse Dimensionen in einem Stern-Schema"
