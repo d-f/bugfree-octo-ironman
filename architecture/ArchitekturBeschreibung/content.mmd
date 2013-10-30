@@ -32,7 +32,7 @@ Die Visualization Komponente ist dafür zuständig die von der Analyse gewonnen 
 
 Die Visualisierung besteht aus zwei Komponenten, jene die im Browser ausgeführt wird (Dashboard Client) und jene die auf dem Server ausgeführt wird (Dashboard Server).
 Um möglichst einfachen Zugriff auf die Benutzeroberfläche zu ermöglichen läuft diese als Webanwendung, womit sie auch über Smartphones und Tablets aufgerufen werden kann.
-Der Dashboard Client soll die verschiedenen Informationen dabei in einzelnen Ansichten darstellen. Dabei liegt der Fokus darauf die Fragen, `wann` ist `was` `wo` passiert?, zu beantworten.
+Der Dashboard Client soll die verschiedenen Informationen, wie in dabei in einzelnen Ansichten darstellen ([fig_dashboard_mockup][]). Dabei liegt der Fokus darauf die Fragen, `wann` ist `was` `wo` passiert?, zu beantworten.
 
   * Das “wann” wird mithilfe einer Auswahl des Benutzers getroffen. Der Benutzer wählt dafür einen bestimmten Zeitpunkt bzw. einen Zeitraum (bspw. heute / jetzt, gestern, letzte Woche, heute 12:00-13:30 Uhr) aus. Durch die Auswahl werden dann die durch die Analyse gewonnen Daten visualisiert.
   * “Was” zum ausgewählten Zeitraum passiert wird durch die kategorisierten Daten in einem Streamgraphen dargestellt.
@@ -45,3 +45,4 @@ Der Dashboard Server stellt die Webanwendung bereit und liefert die für den Cli
 
 
 [fig_dwh_starschema]: star_schema.png "Datawarehouse Dimensionen in einem Stern-Schema"
+[fig_dashboard_mockup]: dashboard_mockup.svg "Mockup zur Visualisierung der Informationen in einem Dashboard"
