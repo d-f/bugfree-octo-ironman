@@ -4,37 +4,51 @@ latex footer:       x3-paper-end
 
 # Architekturbeschreibung
 
-Die Architektur des Prototyps besteht aus drei Hauptkomponenten: Data Extraction, Data Analysis und Visualization, welche außerdem der internen Aufteilung der Gruppe entsprechen. Diese Aufteilung ermöglicht den Teams die Komponenten der jeweils anderen Teams als Blackbox zu betrachten, sodass eine Abstimmung lediglich über die Funktionalität (was wird umgesetzt), nicht aber über die konkrete Implementation (wie wird es umgesetzt) der Komponenten erfolgen muss.
+Die Architektur des Prototyps besteht aus drei Hauptkomponenten: Data Extraction, Data Analysis und Visualization, welche außerdem der internen Aufteilung der Gruppe entsprechen. Diese Aufteilung ermöglicht den Teams die Komponenten der jeweils anderen Teams als Blackbox zu betrachten, sodass eine Abstimmung lediglich über die Funktionalität (was wird umgesetzt) und die Schnittstellen untereinander, nicht aber über die konkrete Implementation (wie wird es umgesetzt) der Komponenten erfolgen muss.
 
 Im Folgenden wird zuerst die Schnittstelle zwischen den Komponenten und anschließend jede Komponente einzeln beschrieben.
 
 
 ## Komponentenschnittstelle
 
-Für den Prototyp des Systems wird als zentrale Schnittstelle zwischen den Komponenten eine einfach relationale Datenbank genutzt (MySQL). Diese Designentscheidung wurde getroffen, um eine möglichst einfache Integration der Komponenten zu ermöglichen, und somit den Fokus auf die für den Prototypen relevanteren Themen legen zu können, deren Komplexität innerhalb der Komponenten liegt. Aus der Verwendung einer Datenbank als Schnittstelle ergibt sich der Nachteil, dass die Analyse- sowie die Visualisierungskomponente die Datenbank konstant nach neuen Daten fragen muss (polling). Als Ergänzung zur Datenbank könnte man hier eine Message Queue einsetzen.
+Für den Prototyp des Systems wird als zentrale Schnittstelle zwischen den Komponenten eine einfach relationale Datenbank genutzt (MySQL). Diese Designentscheidung wurde getroffen, um eine möglichst einfache Integration der Komponenten zu ermöglichen, und somit den Fokus auf die für den Prototypen relevanteren Themen legen zu können, wobei die Komplexität innerhalb der Komponenten liegt. Aus der Verwendung einer Datenbank als Schnittstelle ergibt sich der Nachteil, dass die Analyse- sowie die Visualisierungskomponente die Datenbank konstant nach neuen Daten Fragen muss (polling) um in Echtzeit zu arbeiten. Als Ergänzung zur Datenbank könnte man hier eine Message Queue und einen Cache für Abfragen einsetzen.
 
+Diese zentrale Datenbank wird hier auch Datawarehouse angesehen, worauf alle Komponenten operieren. Dabei ist die *Data Extraction* für das sammeln der Basisdaten und Metadaten zuständig. Mithilfe von ETL sind die gesammelten Daten dann in das Datawarehouse Modell zu übertragen (siehe [dwh_starschema][]). In der *Data Anlysis* Komponente werden dann mit OLAP und Data-Mining aus den Daten wertvolle Informationen erzeugt. Diese können dann in der *Visualisation* abgefragt und dargestellt werden.
+
+<!--\figl{start_schema}{Datawarehouse Dimensionen in einem Stern-Schema}-->
 
 
 ## Data Extraction
 
-Die Data Extraction Komponente bildet die Schnittstelle zwischen den Sozialen Netzen, welche wir als Datenquellen benutzen, und unserem System. Für die einzelnen Netzwerke wird hier ein entsprechender Adapter verwendet, welcher generische Daten extrahiert. Außerdem werden Netzwerk-spezifische Daten (bei Twitter bspw. Retweets) gesondert ablegt, damit diese für die Analyse nicht verloren gehen. Die Adapter persistieren die Daten über das `IPersistenceManager` Interface des `PersistenceManager`s.
-
-
+Die Data Extraction Komponente bildet die Schnittstelle zwischen den sozialen Netzwerken, unserer primäre Datenquelle, und dem Rest des Systems. Für die einzelnen Netzwerke wird hier ein entsprechender Adapter verwendet, welcher generische Daten extrahiert. Außerdem werden Netzwerk-spezifische Daten (bei Twitter bspw. Retweets oder Geolocation) gesondert ablegt, damit diese für die Analyse nicht verloren gehen. Die Adapter persistieren die Daten über das `IPersistenceManager` Interface des `PersistenceManager`s. Neben den Basisdaten werden hier noch weitere Metadaten gesammelt, die in die Analyse einbezogen werden können. Hier haben wir z. B. eine Städteliste mit den zugehörigen Georeferenzen.
 
 ## Data Analysis
 
-In der Data Analysis Komponente werden die extrahierten Daten zu Informationen konsolidiert. Hier gibt es ebenfalls für jedes angebundene soziale Netz eine `Analyser` Komponente, welche die Daten in ein für den `InformationExtractor` nutzbares Format bringen, welche er über die `IDataSource` Schnittstelle abfragt. Der `InformationExtractor` verwendet anschließend weitere Analyse-interne Komponenten um Informationen aus den Daten zu gewinnen. Für den Prototyp sind hier ein `KeywordFinder` angedacht, welcher mögliche Schlüsselworte identifiziert, sowie ein `Categorizer`, welcher die Daten in Kategorien einteilt (bspw. Hilfegesuch, Pressemitteilung, ...).
+In der Data Analysis Komponente werden die extrahierten Daten zu Informationen konsolidiert. Hier gibt es wie bei der *Data Extraction* für jedes angebundene soziale Netz eine `Analyser` Komponente, welche die Daten in ein für den `InformationExtractor` nutzbares Format transformiert, damit diese über die `IDataSource` Schnittstelle abgefragt werden können. Der `InformationExtractor` verwendet anschließend weitere Analyse-interne Komponenten um Informationen aus den Daten zu gewinnen. Für den Prototyp sind hier ein `KeywordFinder` und `Categorizer` angedacht. Der `KeywordFinder` soll dabei möglichst alle wichtigen Schlüsselworte identifizieren können. Der `Categorizer` soll die Daten in verschiedenen Kategorien, wie bspw. Hilfegesuch, Pressemitteilung, etc. einteilen.
 
 
 <!--\newpage-->
 ## Visualization
 
-Die Visualization Komponente ist dafür zuständig, die von der Analyse gewonnenen Informationen verständlich und interaktiv darzustellen. Ziel ist es, den im Katastrophenschutz involvierten Behörden einen Überblick über die Situation, wie sie sich in den sozialen Netzen wiederspiegelt, zu verschaffen.
+Die Visualization Komponente ist dafür zuständig die von der Analyse gewonnen Informationen verständlich und interaktiv darzustellen. Ziel ist es, den in den Katastrophenschutz involvierten Behörden vor allem einen Überblick über die aktuelle Situation zu verschaffen, wie sie sich in den sozialen Netzen wiederspiegelt.
 
-Um einen möglichst einfachen Zugriff auf die Oberfläche zu ermöglichen, läuft diese als Webanwendung, womit sie auch über Smartphones und Tablets aufgerufen werden kann. Entsprechend gibt es zwei Komponenten, jene die im Browser ausgeführt wird (Dashboard Client) und jene die auf dem Server ausgeführt wird (Dashboard Server).
+Die Visualisierung besteht aus zwei Komponenten, jene die im Browser ausgeführt wird (Dashboard Client) und jene die auf dem Server ausgeführt wird (Dashboard Server).
+Um möglichst einfachen Zugriff auf die Benutzeroberfläche zu ermöglichen läuft diese als Webanwendung, womit sie auch über Smartphones und Tablets aufgerufen werden kann.
+Der Dashboard Client soll die verschiedenen Informationen, wie in dabei in einzelnen Ansichten darstellen ([dashboard_mockup][]). Dabei liegt der Fokus darauf die Fragen, `wann` ist `was` `wo` passiert?, zu beantworten.
+
+  * Das “wann” wird mithilfe einer Auswahl des Benutzers getroffen. Der Benutzer wählt dafür einen bestimmten Zeitpunkt bzw. einen Zeitraum (bspw. heute / jetzt, gestern, letzte Woche, heute 12:00-13:30 Uhr) aus. Durch die Auswahl werden dann die durch die Analyse gewonnen Daten visualisiert.
+  * “Was” zum ausgewählten Zeitraum passiert wird durch die kategorisierten Daten in einem Streamgraphen dargestellt.
+  * Weiterhin wird mithilfe einer interaktiven Karte der geographische Bezug der Daten visualisiert, um das “wo” zu beantworten.
+
+Durch diese miteinander verbundenen Ansichten soll damit ein Lagebild zu einem bestimmten Kontext aus verschiedenen Sichtweisen schnell vermittelbar sein.
+
+Der Dashboard Server stellt die Webanwendung bereit und liefert die für den Client erforderlichen Daten aus. Dabei greift dieser auf die  Datenbank zu, welche durch die Data Analysis Komponente erzeugt wurde. 
+
+<!--\figl{dashboard_mockup}{Mockup zur Visualisierung der Informationen in einem Dashboard}-->
+
+
 
 <!--\figl{architecture}{UML Komponentensicht auf die Architektur}-->
-
 
 
 <!--\newpage-->
