@@ -1,4 +1,31 @@
 .row.page-title
-  %h2 Widget Overview
-  %input{:type => :range, :min => 4, :max => 30, :value => 10, "onChange" => "window.timeline.sliderUpdate(this)"}
-  #timeline
+  %h2 Kategorien
+.row
+  .col-md-3
+    %ul.list-group
+    - (42...47).each do |i|
+      %li.list-group-item
+        %input{:type => "checkbox"}
+        / = link_to "category" this
+        = i
+  .col-md-9
+    .row
+      .widget
+        .widget-header
+          .title Zeitraum
+        .widget-body
+          #timeslider
+          %input{:type => :range, :min => 4, :max => 30, :value => 10, "onChange" => "window.timeline.sliderUpdate(this)"}
+    .row
+      .widget
+        .widget-header
+          .title Streamgraph
+        .widget-body
+          #streamgraph
+    .row
+      .widget
+        .widget-header
+          .title Karte
+        .widget-body
+          #map
+
