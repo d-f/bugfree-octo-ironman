@@ -16,3 +16,4 @@
 //= require ../../../vendor/assets/javascripts/d3.js
 //
 //= require_tree .
+//= require websocket_rails/main
