@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require ../../../vendor/assets/javascripts/bootstrap.js
 //= require ../../../vendor/assets/javascripts/d3.js
+//= require ../../../vendor/assets/javascripts/nv.d3.js
 //
 //= require_tree .
 //= require websocket_rails/main
