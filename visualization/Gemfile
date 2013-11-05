@@ -13,6 +13,7 @@ gem 'haml-rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+gem "leaflet-rails", "~> 0.6.4"
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'

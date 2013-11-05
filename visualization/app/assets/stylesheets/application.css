@@ -11,6 +11,8 @@
  *= require ../../../vendor/assets/stylesheets/bootstrap.css
  *= require ../../../vendor/assets/stylesheets/icons.css
  *= require ../../../vendor/assets/stylesheets/nv.d3.css
+ *= require leaflet
+ *= require leaflet.ie
  *= require_self
  *= require ./slick-admin
  */
