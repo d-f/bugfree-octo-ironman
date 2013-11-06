@@ -21,6 +21,12 @@
         .widget-header
           .title Streamgraph
         .widget-body
+          %button.btn{"onClick" => "window.streamgraph.toggleLive(this)"}
+            %span.icon-eye
+            start Live
+          %button.btn{"onClick" => "window.streamgraph.toggleLive(this)"}
+            %span.icon-eye-blocked
+            stop Live
           #streamgraph
     .row
       .widget
