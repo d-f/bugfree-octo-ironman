@@ -102,7 +102,6 @@ public class SortTweets extends JFrame {
 		this.getContentPane().add(fileName, BorderLayout.NORTH);
 		this.getContentPane().add(panels[0], BorderLayout.CENTER);
 		this.getContentPane().add(panels[1], BorderLayout.SOUTH);
-//		this.setSize(new Dimension(400, 400));
 	}
 
 	private JButton[] initButtons() {
