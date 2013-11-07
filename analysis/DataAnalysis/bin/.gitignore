@@ -2,3 +2,7 @@
 /SortTweets$ButtonListener.class
 /SortTweets.class
 /TwitterDataAnalyser.class
+/SocialMessage.class
+/ISocialMessage.class
+/TwitterMessage.class
+/ASocialMessage.class
