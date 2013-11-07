@@ -35,7 +35,7 @@ public class DatabaseAdapter {
 			open();
 			statement = (Statement) connect.createStatement();
 			resultSet = statement.executeQuery("select id, text, timestamp from " + database + "."
-					+ table + " where timestamp >= '" + t1 + "' and timestamp <= '" + t2 + "'" );
+					+ table + " where timestamp >= '" + t1 + "' and timestamp <= '" + t2 + "'");
 
 			while (resultSet.next()) {
 				SocialMessage sm = new SocialMessage();
@@ -61,13 +61,14 @@ public class DatabaseAdapter {
 	/**
 	 * Dumps all messages in given database
 	 */
-	public void dumpToConsole() {
+	public void dumpToConsole(String table) {
 		try {
 			open();
 			statement = (Statement) connect.createStatement();
-			resultSet = statement.executeQuery("select * from MI_WS1314.tweets_sturm");
+			resultSet = statement.executeQuery("select * from " + database + "." + table);
 
 			while (resultSet.next()) {
+				// TODO spalten sollten selbst erkannt und ausgegeben werden.
 				System.out.println("[ID] " + resultSet.getBigDecimal(1));
 				System.out.println("[iteration]" + resultSet.getInt(2));
 				System.out.println("[text]" + resultSet.getString(3));
@@ -81,7 +82,7 @@ public class DatabaseAdapter {
 				System.out.println("[commentRef]" + resultSet.getBigDecimal(11));
 				System.out.println("###########################################################");
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
