@@ -9,7 +9,7 @@ public class TwitterDataAnalyser {
 
 //			da.dumpToConsole();
 
-			SocialMessage[] messages = da .getTweets("tweets_sturm", new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+			SocialMessage[] messages = da .getSocialMessage("tweets_sturm", new Timestamp(0), new Timestamp(System.currentTimeMillis()));
 			System.out.println(messages.length);
 			
 			

@@ -28,7 +28,7 @@ public class DatabaseAdapter {
 	/**
 	 * Returns Tweets in given time range t1 to t2
 	 */
-	public SocialMessage[] getTweets(String table, Timestamp t1, Timestamp t2) {
+	public SocialMessage[] getSocialMessage(String table, Timestamp t1, Timestamp t2) {
 		ArrayList<SocialMessage> messages = new ArrayList<SocialMessage>();
 
 		try {
