@@ -18,17 +18,31 @@ class CreateTables < ActiveRecord::Migration
     create_table :categories do |t|
       t.string :name, :limit => 200
     end
+    add_index :categories, :name, :unique => true
 
-    create_table :categories_tweets do |t|
+    create_table :categories_tweets, {:id => false} do |t|
       t.belongs_to :tweet, :null => false, :limit => 8
       t.belongs_to :category, :null => false
     end
+    execute "ALTER TABLE categories_tweets ADD PRIMARY KEY (category_id, tweet_id)"
 
-    create_table :information do |t|
+    create_table :tags do |t|
+      t.string :name, :limit => 200
+    end
+    add_index :tags, :name, :unique => true
+
+    create_table :tags_tweets, {:id => false} do |t|
+      t.belongs_to :tweet, :null => false, :limit => 8
+      t.belongs_to :tag, :null => false
+    end
+    execute "ALTER TABLE tags_tweets ADD PRIMARY KEY (tweet_id, tag_id)"
+
+    create_table :information, {:id => false} do |t|
       t.belongs_to :tweet, :null => false, :limit => 8
       t.string :geolocation, :limit => 200
       t.string :place, :limit => 200
     end
+    execute "ALTER TABLE information ADD PRIMARY KEY (tweet_id)"
 
   end
 end

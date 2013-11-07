@@ -17,15 +17,27 @@ ActiveRecord::Schema.define(version: 20131104170000) do
     t.string "name", limit: 200
   end
 
-  create_table "categories_tweets", force: true do |t|
+  add_index "categories", ["name"], name: "index_categories_on_name", unique: true, using: :btree
+
+  create_table "categories_tweets", id: false, force: true do |t|
     t.integer "tweet_id",    limit: 8, null: false
     t.integer "category_id",           null: false
   end
 
-  create_table "information", force: true do |t|
-    t.integer "tweet_id",    limit: 8,   null: false
-    t.string  "geolocation", limit: 200
-    t.string  "place",       limit: 200
+  create_table "information", primary_key: "tweet_id", force: true do |t|
+    t.string "geolocation", limit: 200
+    t.string "place",       limit: 200
+  end
+
+  create_table "tags", force: true do |t|
+    t.string "name", limit: 200
+  end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+
+  create_table "tags_tweets", id: false, force: true do |t|
+    t.integer "tweet_id", limit: 8, null: false
+    t.integer "tag_id",             null: false
   end
 
   create_table "tweets", force: true do |t|
