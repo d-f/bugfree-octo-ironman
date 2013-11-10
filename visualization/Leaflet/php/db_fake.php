@@ -35,7 +35,7 @@
     mysql_close ();  
     
     echo ("</table><p><b>Finished!</b></p>".
-          "<a href='index.php'>Return to Map</a>");  
+          "<a href='../index.php'>Return to Map</a>");  
   ?>
   
   </body>
