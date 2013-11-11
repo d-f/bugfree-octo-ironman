@@ -46,10 +46,9 @@ public class TweetClassifier {
 				classifier.handle(classified);
 			}
 		}
-		// compiling
+
 		System.out.println("Compiling");
 		@SuppressWarnings("unchecked")
-		// we created object so know it's safe
 		JointClassifier<CharSequence> compiledClassifier = (JointClassifier<CharSequence>) AbstractExternalizable
 				.compile(classifier);
 
@@ -58,6 +57,7 @@ public class TweetClassifier {
 				compiledClassifier, CATEGORIES, storeCategories);
 		for (int i = 0; i < CATEGORIES.length; ++i) {
 			File classDir = new File(TESTING_DIR, CATEGORIES[i]);
+			System.out.println(classDir.getAbsolutePath());
 			String[] testingFiles = classDir.list();
 			for (int j = 0; j < testingFiles.length; ++j) {
 				String text = Files.readFromFile(new File(classDir, testingFiles[j]), "ISO-8859-1");
@@ -74,9 +74,9 @@ public class TweetClassifier {
 			}
 		}
 		ConfusionMatrix confMatrix = evaluator.confusionMatrix();
-		System.out.println("Total Accuracy: " + confMatrix.totalAccuracy());
-
-		System.out.println("\nFULL EVAL");
-		System.out.println(evaluator);
+//		System.out.println("Total Accuracy: " + confMatrix.totalAccuracy());
+//
+//		System.out.println("\nFULL EVAL");
+//		System.out.println(evaluator);
 	}
 }
