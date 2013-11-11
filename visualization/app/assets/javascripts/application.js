@@ -10,10 +10,13 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require websocket_rails/main
 //= require jquery
 //= require jquery_ujs
 //= require ../../../vendor/assets/javascripts/bootstrap.js
 //= require ../../../vendor/assets/javascripts/d3.js
 //
+//= require ./widgets/widget_manager.js.coffee
+//
 //= require_tree .
-//= require websocket_rails/main
+
