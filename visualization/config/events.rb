@@ -21,4 +21,9 @@ WebsocketRails::EventMap.describe do
   namespace :ui do
     subscribe :update_range, :to => WebsocketController, :with_method => :update_range
   end
+
+  namespace :time do
+    subscribe :get, :to => WebsocketController, :with_method => :get_time
+    subscribe :set, :to => WebsocketController, :with_method => :set_time
+  end
 end

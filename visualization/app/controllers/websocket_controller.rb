@@ -3,4 +3,12 @@ class WebsocketController < WebsocketRails::BaseController
     WebsocketRails[:channel_name].trigger(:event_name, {:start => message})
     WebsocketRails[:ui].trigger(:time_range_updated, {:start => 999, :end => 111})
   end
+
+  def get_time
+    trigger_success SimulatedTime.now
+  end
+
+  def set_time
+    raise "not implemented"
+  end
 end
