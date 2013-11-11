@@ -21,5 +21,12 @@ module Visualization
     # config.i18n.default_locale = :de
 
     config.assets.paths << Rails.root.join('vendor', 'assets', 'fonts')
+    config.autoload_paths += %W(#{config.root}/app/workers)
+
+    Sidekiq.configure_server do |config|
+      config.poll_interval = 3
+    end
+    Sidekiq.logger.level = Logger::DEBUG
+    Sidekiq.options[:poll_interval] = 1
   end
 end

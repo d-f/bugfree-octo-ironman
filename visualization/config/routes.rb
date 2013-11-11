@@ -55,4 +55,7 @@ Visualization::Application.routes.draw do
   #   end
 
   root 'widget#index'
+
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
 end

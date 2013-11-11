@@ -3,6 +3,9 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
+gem 'sinatra', '>= 1.3.0', :require => nil
+gem 'sidekiq'
+gem 'clockwork'
 
 gem 'sqlite3'
 gem 'mysql2'
