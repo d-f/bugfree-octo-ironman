@@ -16,15 +16,14 @@ function DataManager ($dbCon, $refreshInterval, $initialTimespan) {
    * @param $oldest Beginn des Anzeigeintervalls (<-- Vergangenheit).
    * @param $newest Ende des Anzeigeintervalls (--> Gegenwart). */
   function constr ($oldest, $newest) {     
-    
+  
     // Erstellt eine Liste für die Markierungen und ein Layergruppen-Array. 
     data = new LinkedList ("Datenmarkierungen");
     layers = new Object ();    
      
     // Abruf der Kategorien und Aufbau der Datenstruktur.  
-    var categories = dbCon.sendQuery ("SELECT * FROM categories");    
-    categories = JSON.parse (categories);         
-    
+    var categories = dbCon.getCategories ();    
+    categories = JSON.parse (categories);     
     for (var i = 0; i < categories.length; i ++) {
       var category = categories[i]['description'];
       layers [category] = L.layerGroup ();
@@ -34,7 +33,7 @@ function DataManager ($dbCon, $refreshInterval, $initialTimespan) {
     oldest = $newest;     // Lädt in Durchgang 1 exakt das Startintervall.
     newest = $newest;     // Deaktiviert Durchgang 2.   
     setTimespan ($oldest, $newest);    
-    
+     
     // Führt eine periodische Überprüfung aus, um zu alte Einträge zu entfernen.  
     setInterval (function() {checkInterval (false,false)}, $refreshInterval*1000);    
   } constr ($initialTimespan.split("-")[1], $initialTimespan.split("-")[0]);
@@ -46,8 +45,12 @@ function DataManager ($dbCon, $refreshInterval, $initialTimespan) {
    * @param $newest Die vordere Schranke. */
   this.setTimespan = function ($oldest, $newest) {setTimespan ($oldest, $newest);}
   function setTimespan ($oldest, $newest) { 
-    var reference = new Date ();  // Aktuelles Datum als Referenz.               
-    for (var i = 0; i < 2; i ++) {
+     
+    var reference = new Date ();  // Aktuelles Datum als Referenz.      
+    $oldest = parseInt ($oldest); // Nötig, da die Zahl als String ankommt.
+    $newest = parseInt ($newest); // (s.o.)
+                 
+    for (var i = 0; i < 2; i ++) {      // Durchläuft den Vorgang für beide Grenzen.
       
       var date1 = new Date (reference); // Das untere Datum für die Einschränkung.
       var date2 = new Date (reference); // Das obere Datum für die Datenbankabfrage. 
@@ -73,40 +76,19 @@ function DataManager ($dbCon, $refreshInterval, $initialTimespan) {
       date2 = date2.toISOString().substring(0, 10)+" "+date2.toLocaleTimeString();
       
       // Lädt die fehlenden Posts aus der DB und fügt sie der Datenstruktur hinzu.
-      var posts = dbCon.sendQuery ("SELECT senddate, description, position "+
-                                   "FROM processed_data, categories "+ 
-                                   "WHERE senddate < '"+date2+"' "+
-                                   "AND  senddate >= '"+date1+"' "+
-                                   "AND  category = categories.id");    
+      var posts = dbCon.getData (date1, date2);    
       posts = JSON.parse (posts);      
-      for (var j = 0; j < posts.length; j ++) newPost (posts[j]);                        
+      for (var j = 0; j < posts.length; j ++) newPost (posts[j]);                      
     }  
-        
+    
     // Verschiebung merken, Grenzen übernehmen und eine Neu-Überprüfung veranlassen.    
     var lsOldest = ($oldest > oldest);
     var lsNewest = ($newest > newest);
     oldest = $oldest;
     newest = $newest;
     checkInterval (lsOldest, lsNewest); 
-    
-    
-    //TODO Noch doppelt: Sollte ausgegliedert werden!
-    //TODO Funktion enthält noch einen Bug: Hin und wieder werden die Zeitschranken
-    //     anscheinend nicht korrekt erfaßt. Es fehlen Einträge!
-    
-    // Gibt die geänderten Anzahlen an die Kategorieauswahl weiter. 
-    if (selListener != null) {
-      for (var category in layers)
-        selListener.catCounterChanged (category, layers[category].getLayers().length);
-        data.printList ("insertArea");
-    }    
+    onEntryChange ();   // Zur Übernahme bei Hinzufüge-Operationen.
   }
-  
-  /*
-    TODO Data-changed: Das Intervall macht sowohl rausschmeißen als auch DB-Abfrage 
-    (ob's was neues gibt bzw etwas, das in den Anzeige-Zeitraum eingetreten ist) 
-    Das Datum muß ins Datum (der Liste ;-)! Sonst kommt man ja nicht auf den KEY.
-  */
 
 
   
@@ -132,32 +114,51 @@ function DataManager ($dbCon, $refreshInterval, $initialTimespan) {
     max = max.toISOString().substring(0, 10)+" "+max.toLocaleTimeString();
       
 
-    // Die Untergrenze wurde nicht vergrößert: Prüfen, ob Elemente herausfallen.
+    // Die Ältest-Grenze wurde nicht vergrößert: Prüfen, ob Elemente herausfallen.
     if (! $lsOldest) {
       var entry = data.getData ("HEAD");
       while (entry != null) {
         if (entry.date < min) {
-          layers [entry.category].removeLayer (entry.marker);
-          entry.marker = null;
-          data.deleteElement (entry.date);
-          hasChanges = true;
-        }
-        else break;       
-        entry = data.getData (entry.date, "NEXT");  
+          var nextLE = data.getData (entry.date, "NEXT");
+          removeEntry (entry);
+          entry = data.getData (nextLE);         
+        } else break;               
       }
     }
     
-    // Die Obergrenze wurde zurückgesetzt. Nicht mehr gewünschte Elemente entfernen.
+    // Das Intervall wurde mit der Neuest-Grenze verkleinert. Liste von unten prüfen.
     if ($lsNewest) {
-      //alert ("lsNewest");
+      var entry = data.getData ("TAIL");
+      while (entry != null) {
+        if (entry.date > max) { 
+          var prevLE = data.getData (entry.date, "PREV");
+          removeEntry (entry); 
+          entry = data.getData (prevLE);
+        } else break;               
+      }      
     }  
      
-    // Gibt die geänderten Anzahlen an die Kategorieauswahl weiter. 
-    if (hasChanges && selListener != null) {
+    // Aktualisiert die Oberfläche bei Änderungen. 
+    if (hasChanges) onEntryChange (); 
+    
+    
+    // Innere Funktion zum Löschen eines Eintrages.
+    function removeEntry (entry) {
+      layers [entry.category].removeLayer (entry.marker);
+      entry.marker = null;
+      data.deleteElement (entry.date);
+      hasChanges = true;
+    } 
+  }
+  
+  
+  /** Führt Updates der Oberfläche bei Eintragsänderungen aus. */
+  function onEntryChange () {
+    if (selListener != null) {
       for (var category in layers)
-        selListener.catCounterChanged (category, layers[category].getLayers().length);
-        data.printList ("insertArea");
-    }      
+        selListener.catCounterChanged (category, layers[category].getLayers().length);      
+    }
+    data.printList ("insertArea");    // Debug-Ausgabe der DVKL.
   }
   
   
@@ -185,7 +186,7 @@ function DataManager ($dbCon, $refreshInterval, $initialTimespan) {
     
     // Erstellt die Detail-Informationen und bindet sie an die Markierung.
     marker.bindPopup (
-      "<table cellspacing='0'>                                                             "+
+      "<table cellspacing='0'>                                              "+
       "  <tr><td><b>Kategorie:</b></td><td>"+category         +"</td></tr>  "+
       "  <tr><td><b>Gesendet: </b></td><td>"+$post['senddate']+"</td></tr>  "+
       "  <tr><td><b>Absender: </b></td><td>"+"Unbekannt"      +"</td></tr>  "+

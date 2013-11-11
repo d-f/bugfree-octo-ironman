@@ -4,11 +4,36 @@
                           // (0-getrennt, 1-manuell, 2-automatisch)
 
 
-  // Wenn eine GET-Anfrage kommt, wird sie bearbeitet und das Ergebnis zurückgegeben.
-  if (isset ($_GET['q'])) {
-    $result = execQuery ($_GET['q']);
-    echo json_encode ($result);  
-  }    
+  /** Verteiler für die POST-Aufrufe des Connectors. Ruft die Unterfunktionen dieses
+   *  Skriptes auf und übergebt die Parameter oder Upload-Dateien.   */
+  if (isset ($_POST['arg'])) {
+    switch ($_POST['arg']) {
+      case 'getCategories': loadCategories ();                               break;
+      case 'getData'      : loadData ($_POST['minDate'], $_POST['maxDate']); break;
+    }
+  }   
+  
+  
+  /** Ruft die Tweed-Kategorien ab.
+   * @return JSON-Array der Kategorien. */  
+  function loadCategories () {
+    $result = execQuery ("SELECT * FROM categories");
+    echo json_encode ($result);    
+  }
+  
+  
+  /** Ruft Einträge einer gewissen Zeitspanne ab.
+   * @param minDate Untere Zeitschranke (Mindest-Datum).
+   * @param maxDate Obere Zeitschranke (begrenzt neuestes Datum). 
+   * @return JSON-Array der Tweeds. */  
+  function loadData ($minDate, $maxDate) {    
+    $result = execQuery ("SELECT senddate, description, position ".
+                         "FROM processed_data, categories ". 
+                         "WHERE senddate < '".$maxDate."' ".
+                         "AND  senddate >= '".$minDate."' ".
+                         "AND  category = categories.id");
+    echo json_encode ($result);   
+  }
       
       
   /** Führt eine Anfrage auf die Datenbank durch.
