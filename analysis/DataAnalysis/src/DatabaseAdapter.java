@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 
 public class DatabaseAdapter {
@@ -55,7 +56,7 @@ public class DatabaseAdapter {
 	}
 
 	public void storeTweetInformations() {
-
+		
 	}
 
 	/**
