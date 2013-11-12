@@ -165,4 +165,4 @@ class Timeline
 
 
 
-window.timeline = new Timeline("#timeline")
+#window.timeline = new Timeline("#timeline")
