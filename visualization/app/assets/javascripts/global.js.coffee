@@ -1,6 +1,6 @@
 
 $(".datetime_picker").datetimepicker
-    format: "yyyy-mm-dd hh:ii"
+    format: "yyyy-mm-ddThh:ii:ss+00:00"
     pickerPosition: "bottom-left"
     todayBtn: true
 
