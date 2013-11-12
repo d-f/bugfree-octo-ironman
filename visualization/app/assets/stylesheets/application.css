@@ -11,6 +11,7 @@
  *= require ../../../vendor/assets/stylesheets/bootstrap.css
  *= require ../../../vendor/assets/stylesheets/icons.css
  *= require ../../../vendor/assets/stylesheets/bootstrap-datetimepicker.css
+ *= require ../../../vendor/assets/stylesheets/nv.d3.css
  *= require_self
  *= require ./slick-admin
  **= require ./global
