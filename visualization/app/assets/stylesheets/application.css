@@ -13,4 +13,5 @@
  *= require ../../../vendor/assets/stylesheets/bootstrap-datetimepicker.css
  *= require_self
  *= require ./slick-admin
+ **= require ./global
  */
