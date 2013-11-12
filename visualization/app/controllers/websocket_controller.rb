@@ -5,12 +5,12 @@ class WebsocketController < WebsocketRails::BaseController
   end
 
   def get_time
-    trigger_success SimulatedTime.now
+    trigger_success SimulatedTime.get
   end
 
   def set_time
     SimulatedTime.set(message[:time])
-    WebsocketRails[:time].trigger(:simulated_time_updated, SimulatedTime.now)
-    trigger_success SimulatedTime.now
+    WebsocketRails[:time].trigger(:simulated_time_updated, SimulatedTime.get)
+    trigger_success SimulatedTime.get
   end
 end

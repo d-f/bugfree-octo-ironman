@@ -1,7 +1,7 @@
 class SettingsController < ApplicationController
 
   def index
-    @time = SimulatedTime.now[0]
+    @time = SimulatedTime.get[0]
   end
 
 end

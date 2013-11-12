@@ -1,7 +1,7 @@
 class SimulatedTime
   class << self
 
-    def now
+    def get
       time = $redis.get("simulated_time")
       if time.nil?
         time = DateTime.now.to_s
