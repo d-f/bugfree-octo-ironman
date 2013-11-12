@@ -15,9 +15,12 @@
 //= require jquery_ujs
 //= require ../../../vendor/assets/javascripts/bootstrap.js
 //= require ../../../vendor/assets/javascripts/d3.js
+//= require ../../../vendor/assets/javascripts/nv.d3.js
 //= require ../../../vendor/assets/javascripts/moment.js
 //= require ../../../vendor/assets/javascripts/bootstrap-datetimepicker.js
 //
 //= require ./widgets/widget_manager.js.coffee
+//= require ./widgets/nvd_timeline.js
 //
 //= require_tree .
+//
