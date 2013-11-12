@@ -8,11 +8,13 @@ update_time = ->
     elapsed = moment().diff(real_time_set)
     time = moment(simulated_time)
     time = time.add('milliseconds', elapsed)
-    time_container.text(time.format('dddd, MMMM Do YYYY, hh:mm:ss'))
+    time_container.text(time.format('dddd, MMMM Do YYYY, HH:mm:ss Z'))
 
 dispatcher.trigger 'time.get', '', (response) ->
     simulated_time = moment(response[0])
     real_time_set = moment(response[1])
     setInterval(update_time, 1000)
 
-#dispatcher.subscribe('time').bind 'simulated_time_updated', (response) ->
+dispatcher.subscribe('time').bind 'simulated_time_updated', (response) ->
+    simulated_time = moment(response[0])
+    real_time_set = moment(response[1])

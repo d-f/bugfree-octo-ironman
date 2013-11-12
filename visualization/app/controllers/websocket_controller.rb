@@ -9,6 +9,8 @@ class WebsocketController < WebsocketRails::BaseController
   end
 
   def set_time
-    raise "not implemented"
+    SimulatedTime.set(message[:time])
+    WebsocketRails[:time].trigger(:simulated_time_updated, SimulatedTime.now)
+    trigger_success SimulatedTime.now
   end
 end

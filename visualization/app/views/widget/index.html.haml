@@ -1,17 +1,17 @@
-.container
-  .row.page-title
-    %h2 Widget Overview
-    %input{:type => :range, :min => 4, :max => 30, :value => 10, "onChange" => "window.timeline.sliderUpdate(this)"}
+
+.row.page-title
+  %h2 Widget Overview
+  %input{:type => :range, :min => 4, :max => 30, :value => 10, "onChange" => "window.timeline.sliderUpdate(this)"}
 
 
 
-  .row
-    .col-md-6
-      #timeline timeline
-    .col-md-6
-      #tweets
-        - (1..5).each do
-          .media
-            .media-body
-              %h4.media-heading Tweets
-              This is where tweets will be displayed.
+.row
+  .col-md-6
+    #timeline timeline
+  .col-md-6
+    #tweets
+      - (1..5).each do
+        .media
+          .media-body
+            %h4.media-heading Tweets
+            This is where tweets will be displayed.

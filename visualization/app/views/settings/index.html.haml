@@ -1,11 +1,10 @@
-.container
-  .row.page-title
-    %h2= t("global.settings")
+.row.page-title
+  %h2= t("global.settings")
 
-  .row
-    %h3= t(".simulated_time")
-    %p= t(".simulated_time_explanation")
-    .input-group.date.form_datetime.datetime_picker
-      %input.form-control{:size => 16, :type => "text", :readonly => true}
-      %span.input-group-addon
-        %i.glyphicon.glyphicon-calendar
+.row
+  %h3= t(".simulated_time")
+  %p= t(".simulated_time_explanation")
+  .input-group.date.form_datetime.datetime_picker
+    %input.form-control#simulated_time{:size => 16, :type => "text", :readonly => true, :value => @time}
+    %span.input-group-addon
+      %i.glyphicon.glyphicon-calendar
