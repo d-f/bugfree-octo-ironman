@@ -6,6 +6,9 @@
 .LSOverride
 Icon
 
+#Idea CFGs
+.idea
+*.iml
 
 # Thumbnails
 ._*
