@@ -5,5 +5,5 @@ $(".datetime_picker").datetimepicker
     todayBtn: true
 
 $("#simulated_time").on 'change',    ->
-    time = "#{$(this).val()}+01:00"
+    time = "#{$(this).val()}+00:00"
     dispatcher.trigger('time.set', {"time": time})
