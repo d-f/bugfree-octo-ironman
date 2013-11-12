@@ -3,7 +3,8 @@
     position: relative;
     overflow: hidden;
 
-    & > * {
+    & > div,
+    & > svg.graph {
         position: absolute;
         top: 0;
         bottom: 0;
