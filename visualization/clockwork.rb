@@ -9,7 +9,7 @@ handler do |job|
   TweetWorker.perform_async("msg")
 end
 
-every(3.seconds, 'frequent.job')
+every(1.seconds, 'frequent.job')
 #every(3.minutes, 'less.frequent.job')
 #every(1.hour, 'hourly.job')
 
