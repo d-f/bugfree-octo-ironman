@@ -1,3 +1,8 @@
+WebsocketRails.setup do |config|
+  config.standalone = true
+  config.redis_options = { :host => 'localhost', :port => '6379' }
+end
+
 WebsocketRails::EventMap.describe do
   # You can use this file to map incoming events to controller actions.
   # One event can be mapped to any number of controller actions. The
@@ -11,4 +16,14 @@ WebsocketRails::EventMap.describe do
   #     subscribe :new, :to => ProductController, :with_method => :new_product
   #   end
   # The above will handle an event triggered on the client like `product.new`.
+  #
+
+  namespace :ui do
+    subscribe :update_range, :to => WebsocketController, :with_method => :update_range
+  end
+
+  namespace :time do
+    subscribe :get, :to => WebsocketController, :with_method => :get_time
+    subscribe :set, :to => WebsocketController, :with_method => :set_time
+  end
 end

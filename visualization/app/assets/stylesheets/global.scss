@@ -1,0 +1,26 @@
+.golden-ratio {
+    display: block;
+    position: relative;
+    overflow: hidden;
+
+    & > div,
+    & > svg.graph {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    & > .dummy {
+        position: static;
+        margin-top: 61.8%;
+    }
+
+
+}
+
+
+.scroll-container {
+    overflow-y: auto;
+}

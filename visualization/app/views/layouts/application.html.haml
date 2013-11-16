@@ -15,11 +15,16 @@
       #optional-dropdown
         %ul
           %li
-            %a
+            %a{:href => root_url}
               = icon "&#xe000;"
+            }
 
       #mini-nav
         %ul
+          %li
+            %a
+              %span.text-label#the_time
+              = icon "&#xe048;"
           %li
             = render "shared/logged_in_user"
 
@@ -28,12 +33,14 @@
     .main-container
       #mainnav
         %ul
-          %li.active
-            %span.current-arrow
-            %a
-              .icon
-                = icon "&#xe0a2;"
-              Dashboard
+          - menu_items().each do |m|
+            - active = current_page?(m[2])
+            %li{:class => active && "active"}
+              - if active
+                %span.current-arrow
+              %a{:href => m[2]}
+                .icon= icon(m[1])
+                = m[0]
 
       .dashboard-wrapper
         = yield
