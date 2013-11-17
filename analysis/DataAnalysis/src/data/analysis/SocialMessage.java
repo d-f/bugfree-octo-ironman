@@ -1,4 +1,5 @@
 package data.analysis;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -9,7 +10,7 @@ public class SocialMessage {
 	private Timestamp timestamp;
 	private String geolocation;
 	private int category;
-	
+
 	public BigDecimal getId() {
 		return id;
 	}
@@ -41,13 +42,19 @@ public class SocialMessage {
 	public void setCategory(int category) {
 		this.category = category;
 	}
-	
+
 	public void setGeolocation(String geolocation) {
 		this.geolocation = geolocation;
 	}
-	
+
 	public String getGeolocation() {
 		return geolocation;
+	}
+
+	@Override
+	public String toString() {
+		return new String("[id]" + id + "; [timestamp]" + timestamp + "; [category]" + category + "; [geolocation]"
+				+ geolocation + "; [text]" + text);
 	}
 
 }

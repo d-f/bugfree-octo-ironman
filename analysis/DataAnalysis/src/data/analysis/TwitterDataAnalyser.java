@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
@@ -34,9 +36,8 @@ public class TwitterDataAnalyser implements IDataSource {
 				end = new Timestamp(Long.MAX_VALUE);
 			}
 
-			resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation FROM "
-					+ DATABASE + "." + table + " WHERE timestamp >= '" + begin
-					+ "' AND timestamp <= '" + end + "'");
+			resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation FROM " + DATABASE + "." + table
+					+ " WHERE timestamp >= '" + begin + "' AND timestamp <= '" + end + "'");
 
 			while (resultSet.next()) {
 				SocialMessage sm = new SocialMessage();
@@ -61,24 +62,22 @@ public class TwitterDataAnalyser implements IDataSource {
 	}
 
 	@Override
-	public SocialMessage[][] getTrainMessages(String table, String[] categories, int limit) {
-		SocialMessage[][] messages = new SocialMessage[categories.length][limit];
+	public SocialMessage[] getTrainMessages(String table, Map<Integer, String> categories, int limit) {
+		SocialMessage[] messages = new SocialMessage[limit * categories.size()];
 
 		try {
 			open();
 			statement = (Statement) connect.createStatement();
 
-			for (int i = 0; i < categories.length; i++) {
-				resultSet = statement.executeQuery("SELECT text, category FROM " + DATABASE + "."
-						+ table + " WHERE category=" + i + " LIMIT " + limit);
+			int k = 0;
+			for (Map.Entry<Integer, String> entry : categories.entrySet()) {
+				resultSet = statement.executeQuery("SELECT text, category FROM " + DATABASE + "." + table
+						+ " WHERE category=" + entry.getKey() + " LIMIT " + limit);
 
-				int k = 0;
 				while (resultSet.next()) {
-					messages[i][k] = new SocialMessage();
-					messages[i][k].setText(resultSet.getString(1));
-					if (resultSet.getInt(2) < categories.length) {
-						messages[i][k].setCategory(resultSet.getInt(2));
-					}
+					messages[k] = new SocialMessage();
+					messages[k].setText(resultSet.getString(1));
+					messages[k].setCategory(resultSet.getInt(2));
 					k++;
 				}
 			}
@@ -97,18 +96,16 @@ public class TwitterDataAnalyser implements IDataSource {
 	}
 
 	@Override
-	public String[] getCategories(String table) {
-		ArrayList<String> categories = new ArrayList<String>();
+	public Map<Integer, String> getCategories(String table) {
+		Map<Integer, String> categories = new HashMap<Integer, String>();
 
 		try {
 			open();
 			statement = (Statement) connect.createStatement();
-			resultSet = statement.executeQuery("SELECT name, id FROM " + DATABASE + "." + table
-					+ " ORDER BY id ASC");
+			resultSet = statement.executeQuery("SELECT id, name FROM " + DATABASE + "." + table + " ORDER BY id ASC");
 
 			while (resultSet.next()) {
-				String category = resultSet.getString(1);
-				categories.add(category);
+				categories.put(resultSet.getInt(1), resultSet.getString(2));
 			}
 
 		} catch (Exception e) {
@@ -121,7 +118,7 @@ public class TwitterDataAnalyser implements IDataSource {
 			}
 		}
 
-		return categories.toArray(new String[categories.size()]);
+		return categories;
 	}
 
 	@Override
@@ -129,8 +126,8 @@ public class TwitterDataAnalyser implements IDataSource {
 		// TODO not only categories
 		try {
 			open();
-			preparedStatement = (PreparedStatement) connect.prepareStatement("INSERT INTO "
-					+ DATABASE + ".categories_tweets VALUES (?,?)");
+			preparedStatement = (PreparedStatement) connect.prepareStatement("INSERT INTO " + DATABASE
+					+ ".categories_tweets VALUES (?,?)");
 
 			for (int i = 0; i < socialMessage.length; i++) {
 				preparedStatement.setBigDecimal(1, socialMessage[i].getId());
@@ -151,8 +148,8 @@ public class TwitterDataAnalyser implements IDataSource {
 
 	private void open() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
-		connect = (Connection) DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT
-				+ "/" + DATABASE + "?user=" + USER + "&password=" + PASSWORD);
+		connect = (Connection) DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE
+				+ "?user=" + USER + "&password=" + PASSWORD);
 	}
 
 	private void close() throws SQLException {

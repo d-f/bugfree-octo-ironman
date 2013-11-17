@@ -1,6 +1,7 @@
 package data.analysis;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 public interface IDataSource {
 
@@ -23,14 +24,14 @@ public interface IDataSource {
 	 * @param limit
 	 * @return 2D-Array of training messages sorted by category <i>[category][messages]</i>
 	 */
-	public SocialMessage[][] getTrainMessages(String table, String[] categories, int limit);
+	public SocialMessage[] getTrainMessages(String table, Map<Integer, String> categories, int limit);
 
 	/**
 	 *
 	 * @param table SQL-table where the data comes from
 	 * @return Array with names of categories
 	 */
-	public String[] getCategories(String table);
+	public Map<Integer, String> getCategories(String table);
 	
 	/**
 	 * 
