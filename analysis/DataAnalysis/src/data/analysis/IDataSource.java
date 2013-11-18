@@ -38,6 +38,6 @@ public interface IDataSource {
 	 * @param socialMessage
 	 * @param table
 	 */
-	public void storeMetadata(SocialMessage[] socialMessage);
+	public void storeMetadata(SocialMessage[] socialMessages);
 	
 }

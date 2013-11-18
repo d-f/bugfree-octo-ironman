@@ -122,16 +122,16 @@ public class TwitterDataAnalyser implements IDataSource {
 	}
 
 	@Override
-	public void storeMetadata(SocialMessage[] socialMessage) {
+	public void storeMetadata(SocialMessage[] socialMessages) {
 		// TODO not only categories
 		try {
 			open();
 			preparedStatement = (PreparedStatement) connect.prepareStatement("INSERT INTO " + DATABASE
 					+ ".categories_tweets VALUES (?,?)");
 
-			for (int i = 0; i < socialMessage.length; i++) {
-				preparedStatement.setBigDecimal(1, socialMessage[i].getId());
-				preparedStatement.setInt(2, socialMessage[i].getCategory());
+			for (int i = 0; i < socialMessages.length; i++) {
+				preparedStatement.setBigDecimal(1, socialMessages[i].getId());
+				preparedStatement.setInt(2, socialMessages[i].getCategory());
 				preparedStatement.executeUpdate();
 			}
 
