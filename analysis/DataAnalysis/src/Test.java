@@ -20,5 +20,6 @@ public class Test {
         DBAdapterImpl dbAdapter = DBAdapterImpl.getInstance(userName,password,url);
         Result<Record> recordResult = dbAdapter.getCategories();
         dbAdapter.getCoordinates("Hamburg");
+        dbAdapter.getAlleStaedteNamen();
     }
 }
