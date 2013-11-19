@@ -10,6 +10,9 @@ Icon
 .idea
 *.iml
 
+#binaries
+*.class
+
 # Thumbnails
 ._*
 
