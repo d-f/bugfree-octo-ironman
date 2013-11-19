@@ -1,5 +1,5 @@
-import org.jooq.Record;
-import org.jooq.Result;
+import java.sql.Timestamp;
+import java.util.Arrays;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,8 +18,7 @@ public class Test {
         String url = args[2];
 
         DBAdapterImpl dbAdapter = DBAdapterImpl.getInstance(userName,password,url);
-        Result<Record> recordResult = dbAdapter.getCategories();
-        dbAdapter.getCoordinates("Hamburg");
-//        dbAdapter.getAlleStaedteNamen();
+        System.out.println(Arrays.deepToString(dbAdapter.getSocialMessages("tweets_sturm",new Timestamp(0L), new Timestamp(
+                Long.MAX_VALUE))));
     }
 }
