@@ -16,7 +16,6 @@ public class TwitterDataAnalyser implements IDataSource {
 	private Connection connect;
 	private Statement statement;
 	private ResultSet resultSet;
-	private PreparedStatement preparedStatement;
 
 	private final static String HOST = "85.25.155.25";
 	private final static String PORT = "3306";
@@ -123,16 +122,28 @@ public class TwitterDataAnalyser implements IDataSource {
 
 	@Override
 	public void storeMetadata(SocialMessage[] socialMessages) {
+		PreparedStatement preparedDeleteStatement;
+		PreparedStatement preparedInsertStatement;
 		// TODO not only categories
 		try {
 			open();
-			preparedStatement = (PreparedStatement) connect.prepareStatement("INSERT INTO " + DATABASE
+
+			// delete old classification
+			preparedDeleteStatement = (PreparedStatement) connect.prepareStatement("DELETE FROM " + DATABASE
+					+ ".categories_tweets WHERE tweet_id=?");
+			// insert new classification
+			preparedInsertStatement = (PreparedStatement) connect.prepareStatement("INSERT INTO " + DATABASE
 					+ ".categories_tweets VALUES (?,?)");
 
 			for (int i = 0; i < socialMessages.length; i++) {
-				preparedStatement.setBigDecimal(1, socialMessages[i].getId());
-				preparedStatement.setInt(2, socialMessages[i].getCategory());
-				preparedStatement.executeUpdate();
+				preparedDeleteStatement.setBigDecimal(1, socialMessages[i].getId());
+				preparedDeleteStatement.executeUpdate();
+				preparedInsertStatement.setBigDecimal(1, socialMessages[i].getId());
+				preparedInsertStatement.setInt(2, socialMessages[i].getCategory());
+				preparedInsertStatement.executeUpdate();
+				if ((i % 100) == 0) {
+					System.out.println(i);
+				}
 			}
 
 		} catch (Exception e) {
