@@ -1,15 +1,18 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-
+import DBAdapter.Tables;
+import DBAdapter.tables.GeodbTextdata;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import DBAdapter.Tables;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA. User: denisf Date: 12.11.13 Time: 22:22 To change
@@ -23,11 +26,15 @@ public class DBAdapterImpl {
 	private String url;
 	private Connection conn = null;
 	private DSLContext create;
+    public static Map<String, Object> alleStaedte = new HashMap<>();
 
 	private DBAdapterImpl(String name, String pass, String url) {
 		this.userName = name;
 		this.password = pass;
 		this.url = url;
+        if (alleStaedte.isEmpty()) {
+            getAlleStaedteNamen();
+        }
 	}
 
 	public static DBAdapterImpl getInstance(String name, String pass, String url) {
@@ -42,6 +49,7 @@ public class DBAdapterImpl {
 		if (conn != null) {
 			try {
 				conn.close();
+                System.out.println("CLOSED!!");
 			} catch (SQLException ignore) {
 			}
 		}
@@ -92,7 +100,7 @@ public class DBAdapterImpl {
 		// Templates.
 	}
 
-	public Result<Record> getCategories() {
+	public Result<Record> getKategorien() {
 		open();
 		Result<Record> result = null;
 		if (conn != null) {
@@ -107,21 +115,45 @@ public class DBAdapterImpl {
 		return result;
 	}
 
-	public Result<Record> getCoordinates(String stadt) {
+	public Map<String, String> getKoordinatenVonLocId(String locId) {
 		open();
-		Result result = null;
-		Object lat = 0;
-		Object lon = 0;
-		result = create.select(Tables.GEODB_COORDINATES.LAT, Tables.GEODB_COORDINATES.LON)
-				.from(Tables.GEODB_COORDINATES).leftOuterJoin(Tables.GEODB_TYPE_NAMES)
+		Result result = create
+                .select(Tables.GEODB_COORDINATES.LAT, Tables.GEODB_COORDINATES.LON)
+				.from(Tables.GEODB_COORDINATES)
+                .leftOuterJoin(Tables.GEODB_TYPE_NAMES)
 				.on(Tables.GEODB_COORDINATES.COORD_TYPE.equal(Tables.GEODB_TYPE_NAMES.TYPE_ID))
-				.where(Tables.GEODB_COORDINATES.LOC_ID.like("60000")).fetch();
+				.where(Tables.GEODB_COORDINATES.LOC_ID.like(locId))
+                .fetch();
 
-		lat = result.getValues(Tables.GEODB_COORDINATES.LAT).get(0);
-		lon = result.getValues(Tables.GEODB_COORDINATES.LON).get(0);
+        Object lat = result.getValues(Tables.GEODB_COORDINATES.LAT).get(0);
+        Object lon = result.getValues(Tables.GEODB_COORDINATES.LON).get(0);
 
-		System.out.println("lat: " + lat + " : " + "lon: " + lon);
-		close();
-		return result;
+		//System.out.println("lat: " + lat + " : " + "lon: " + lon);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("lat", lat.toString());
+        map.put("lon", lon.toString());
+        close();
+		return map;
 	}
+
+    //Sollte nicht genutzt werden! Stattdessen auf die Klassenvariable zugreifen!! Diese wird
+    //bereits beim Initialisieren der Instanz befuellt
+    private void getAlleStaedteNamen(){
+        open();
+        List<Map<String, Object>> result = create
+                .select(GeodbTextdata.GEODB_TEXTDATA.LOC_ID, GeodbTextdata.GEODB_TEXTDATA.TEXT_VAL)
+                .from(GeodbTextdata.GEODB_TEXTDATA)
+                .where(GeodbTextdata.GEODB_TEXTDATA.TEXT_TYPE.eq(500100000))
+                .fetchMaps();
+
+        for (Map<String, Object> m : result){
+            String key = m.get("loc_id").toString();
+            String value = m.get("text_val").toString();
+            //System.out.println(key + "--" + value);
+            alleStaedte.put(key, value);
+        }
+        close();
+    }
+
+
 }
