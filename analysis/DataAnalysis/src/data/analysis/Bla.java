@@ -31,6 +31,7 @@ public class Bla {
 					while ((zeile = in.readLine()) != null) {
 						satz += zeile;
 					}
+					in.close();
 					System.out.println("insert into MI_WS1314.categories_training_tweets values ('" + satz + "'," + i + ");");
 				} catch (IOException e) {
 					e.printStackTrace();
