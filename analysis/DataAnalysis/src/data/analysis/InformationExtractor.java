@@ -2,9 +2,6 @@ package data.analysis;
 
 import java.sql.Timestamp;
 import java.util.Map;
-import java.util.Scanner;
-
-import org.jooq.util.derby.sys.Sys;
 
 public class InformationExtractor {
 
@@ -14,7 +11,7 @@ public class InformationExtractor {
 	private SocialMessage[] twitterMessages;
 	private Map<Integer, String> categories;
 
-	private static final int TRAIN_MESSAGE_COUNT = 20;
+	private static final int TRAIN_MESSAGE_COUNT = 30;
 	private static final String TABLE_TWITTER_CATEGORIES = "categories";
 	private static final String TABLE_TWITTER_TRAINING = "categories_training_tweets";
 	private static final String TABLE_TWITTER_STURM = "tweets_sturm";
@@ -45,18 +42,26 @@ public class InformationExtractor {
 				Long.MAX_VALUE));
 		System.out.println(" done. " + twitterMessages.length + " messages found.");
 
-		System.out.println("categorize messages...");
-		for (int i = 0; i < twitterMessages.length; ++i) {
-			if ((i % 99) == 0 || i == twitterMessages.length - 1) {
-				System.out.println(i + 1);
-			}
+		int[] sm = {42,1337,88,69,7,13,1900,1985,1986,263,611,1701,666,314,1024,2048,512,90,60,925};
+		
+		for (int i : sm) {
 			twitterCategorizer.handle(twitterMessages[i]);
+			System.out.println(twitterMessages[i].getCategory() + ";" + twitterMessages[i].getText());
 		}
-		System.out.println(" done.");
+		
+//		System.out.println("categorize messages...");
+//		for (int i = 0; i < twitterMessages.length; ++i) {
+//			if ((i % 100) == 0 || i == twitterMessages.length - 1) {
+//				System.out.println(i);
+//			}
+//			twitterCategorizer.handle(twitterMessages[i]);
+//		}
+//		System.out.println(" done.");
 
-		System.out.println("save metadata...");
-		twitterData.storeMetadata(twitterMessages);
-		System.out.println(" done.");
+//		System.out.println("save metadata...");
+//		twitterData.storeMetadata(twitterMessages);
+//		System.out.println(" done.");
+//
 	}
 
 }

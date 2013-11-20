@@ -1,15 +1,14 @@
 import DBAdapter.Tables;
 import DBAdapter.tables.GeodbTextdata;
+import data.analysis.SocialMessage;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,19 +75,6 @@ public class DBAdapterImpl {
 	}
 
 	// @Override
-	public Result<Record> getSocialMessage(String table, Timestamp t1, Timestamp t2) {
-		Result<Record> result = create.select().from(Tables.CATEGORIES).fetch();
-		for (Record r : result) {
-			Integer id = r.getValue(Tables.CATEGORIES.ID);
-			String name = r.getValue(Tables.CATEGORIES.NAME);
-
-			System.out.println("ID: " + id + " name: " + name);
-		}
-		return result; // To change body of implemented methods use File |
-						// Settings | File Templates.
-	}
-
-	// @Override
 	public void storeTweetInformations() {
 		// To change body of implemented methods use File | Settings | File
 		// Templates.
@@ -108,7 +94,6 @@ public class DBAdapterImpl {
 			for (Record r : result) {
 				Integer id = r.getValue(Tables.CATEGORIES.ID);
 				String name = r.getValue(Tables.CATEGORIES.NAME);
-				System.out.println("ID: " + id + " name: " + name);
 			}
 		}
 		close();
@@ -155,5 +140,32 @@ public class DBAdapterImpl {
         close();
     }
 
+    public SocialMessage[] getSocialMessages(String table, Timestamp begin, Timestamp end) {
+        List<SocialMessage> messages = new ArrayList<SocialMessage>();
+        open();
+        try {
+            if (begin.getTime() == 0L && end.getTime() == 0L) {
+                end = new Timestamp(Long.MAX_VALUE);
+            }
 
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation FROM "  + table
+                    + " WHERE timestamp >= '" + begin + "' AND timestamp <= '" + end + "'");
+
+            while (resultSet.next()) {
+                SocialMessage sm = new SocialMessage();
+                sm.setId(resultSet.getBigDecimal(1));
+                sm.setText(resultSet.getString(2));
+                sm.setTimestamp(resultSet.getTimestamp(3));
+                sm.setGeolocation(resultSet.getString(4));
+                messages.add(sm);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
+        return messages.toArray(new SocialMessage[messages.size()]);
+    }
 }
