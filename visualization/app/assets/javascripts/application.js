@@ -16,7 +16,6 @@
 //= require ../../../vendor/assets/javascripts/bootstrap.js
 //= require ../../../vendor/assets/javascripts/d3.js
 //= require ../../../vendor/assets/javascripts/nv.d3.js
-//= require leaflet
 //= require ../../../vendor/assets/javascripts/moment.js
 //= require ../../../vendor/assets/javascripts/bootstrap-datetimepicker.js
 //
@@ -24,5 +23,14 @@
 //= require ./widgets/streamgraph.js.coffee
 //= require ./widgets/nvd_timeline.js
 //
-//= require_tree .
-//
+// require_tree .
+
+// Load javascript classes required for the Leaflet map widget.
+//= require ../../../vendor/assets/javascripts/leaflet/leaflet.js
+//= require ./widgets/map/LinkedList.js
+//= require ./widgets/map/DataReceiver.js
+//= require ./widgets/map/DataManager.js
+//= require ./widgets/map/MapControl.js
+//= require ./widgets/map/SettingsListener.js
+//= require ./widgets/map/Initializer.js
+

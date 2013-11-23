@@ -12,9 +12,14 @@
  *= require ../../../vendor/assets/stylesheets/icons.css
  *= require ../../../vendor/assets/stylesheets/bootstrap-datetimepicker.css
  *= require ../../../vendor/assets/stylesheets/nv.d3.css
- *= require leaflet
- *= require leaflet.ie
  *= require_self
  *= require ./slick-admin
  **= require ./global
+ 
+ * Map and slider stylesheets:
+ *= require ./mapdesign.css
+ *= require ../../../vendor/assets/stylesheets/leaflet/leaflet.css
+ *= require ../../../vendor/assets/stylesheets/leaflet/leaflet.ie.css
+ *= require ../../../vendor/assets/stylesheets/jslider/jslider.css
+ *= require ../../../vendor/assets/stylesheets/jslider/jslider.round.plastic.css
  */
