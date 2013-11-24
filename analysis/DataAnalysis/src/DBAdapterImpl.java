@@ -1,14 +1,13 @@
 import DBAdapter.Tables;
-import DBAdapter.tables.GeodbTextdata;
 import data.analysis.SocialMessage;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.*;
 
 import static org.jooq.impl.DSL.fieldByName;
 import static org.jooq.impl.DSL.tableByName;
@@ -25,7 +24,7 @@ public class DBAdapterImpl {
     private String url;
     private Connection conn = null;
     private DSLContext create;
-    public static Map<String, Object> alleStaedte = new HashMap<>();
+    public static Set<String> alleStaedte = new HashSet<>();
 
     private DBAdapterImpl(String name, String pass, String url) {
         this.userName = name;
@@ -39,6 +38,13 @@ public class DBAdapterImpl {
     public static DBAdapterImpl getInstance(String name, String pass, String url) {
         if (instance == null) {
             instance = new DBAdapterImpl(name, pass, url);
+        }
+        return instance;
+    }
+
+    public static DBAdapterImpl getInstance() {
+        if (instance == null) {
+            throw new RuntimeException("Instanz ist noch nicht initialisiert");
         }
         return instance;
     }
@@ -110,15 +116,25 @@ public class DBAdapterImpl {
                 .where(Tables.GEODB_COORDINATES.LOC_ID.like(locId))
                 .fetch();
 
-        Object lat = result.getValues(Tables.GEODB_COORDINATES.LAT).get(0);
-        Object lon = result.getValues(Tables.GEODB_COORDINATES.LON).get(0);
-
         //System.out.println("lat: " + lat + " : " + "lon: " + lon);
         Map<String, String> map = new HashMap<String, String>();
-        map.put("lat", lat.toString());
-        map.put("lon", lon.toString());
+        map.put("lat", result.getValues(Tables.GEODB_COORDINATES.LAT).get(0).toString());
+        map.put("lon", result.getValues(Tables.GEODB_COORDINATES.LON).get(0).toString());
         close();
         return map;
+    }
+
+    public List<Map<String, Object>> getKoordinatenVonOrt(String ort){
+        open();
+        List<Map<String, Object>> result = create
+                .select(fieldByName("zip_coordinates","zc_location_name"),fieldByName("zip_coordinates","zc_lon"),fieldByName("zip_coordinates","zc_lat"))
+                .from(tableByName("zip_coordinates"))
+                .where(fieldByName("zip_coordinates","zc_location_name").eq(ort))
+                .groupBy(fieldByName("zip_coordinates","zc_location_name"))
+                .fetchMaps();
+        System.out.println(result);
+        close();
+        return result;
     }
 
 
@@ -126,20 +142,39 @@ public class DBAdapterImpl {
     //bereits beim Initialisieren der Instanz befuellt
     private void getAlleStaedteNamen() {
         open();
-        //TODO es werden zu viele Informationen ausgegeben. Filtern auf Hierarchien lvl 4
+        /*Result<Record2<Object, Object>> result = create
+                .select(fieldByName("geodb_textdata","loc_id"),fieldByName("geodb_textdata","text_val"))
+                .from(tableByName("geodb_textdata"))
+                .where(fieldByName("geodb_textdata","text_val")
+                        .eq(100700000))
+                .fetch();*/
+
+        /*List<Map<String, Object>> result = create
+                .select(fieldByName("geodb_hierarchies","loc_id"),fieldByName("geodb_textdata","text_val"))
+                .from(tableByName("geodb_textdata"),tableByName("geodb_hierarchies"))
+                .where(fieldByName("geodb_hierarchies", "loc_id")
+                                .eq(fieldByName("geodb_textdata", "loc_id"))
+                        .and(fieldByName("geodb_hierarchies", "id_lvl2")
+                                .eq(105))
+                        .and(fieldByName("geodb_hierarchies", "id_lvl5")
+                                .isNotNull())
+                        .and(fieldByName("geodb_hierarchies", "id_lvl6")
+                                .isNotNull())
+                        .and(fieldByName("geodb_textdata", "text_type")
+                                .eq(500100000)))
+                .fetchMaps();*/
         List<Map<String, Object>> result = create
-                .select(GeodbTextdata.GEODB_TEXTDATA.LOC_ID, GeodbTextdata.GEODB_TEXTDATA.TEXT_VAL)
-                .from(GeodbTextdata.GEODB_TEXTDATA)
-                .where(GeodbTextdata.GEODB_TEXTDATA.TEXT_TYPE
-                        .eq(500100000))
+                .select(fieldByName("zip_coordinates","zc_location_name"))
+                .from(tableByName("zip_coordinates"))
+                .groupBy(fieldByName("zc_location_name"))
                 .fetchMaps();
 
-        for (Map<String, Object> m : result) {
-            String key = m.get("loc_id").toString();
-            String value = m.get("text_val").toString();
-            //System.out.println(key + "--" + value);
-            alleStaedte.put(key, value);
+        for (Map<String,Object> map : result ){
+           alleStaedte.add((String)map.get("zc_location_name"));
         }
+        //System.out.println(alleStaedte);
+        //System.out.println(alleStaedte.size());
+
         close();
     }
 
