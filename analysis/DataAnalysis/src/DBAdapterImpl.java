@@ -10,6 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.jooq.impl.DSL.fieldByName;
+import static org.jooq.impl.DSL.tableByName;
+
 /**
  * Created with IntelliJ IDEA. User: denisf Date: 12.11.13 Time: 22:22 To change
  * this template use File | Settings | File Templates.
@@ -118,14 +121,17 @@ public class DBAdapterImpl {
         return map;
     }
 
+
     //Sollte nicht genutzt werden! Stattdessen auf die Klassenvariable zugreifen!! Diese wird
     //bereits beim Initialisieren der Instanz befuellt
     private void getAlleStaedteNamen() {
         open();
+        //TODO es werden zu viele Informationen ausgegeben. Filtern auf Hierarchien lvl 4
         List<Map<String, Object>> result = create
                 .select(GeodbTextdata.GEODB_TEXTDATA.LOC_ID, GeodbTextdata.GEODB_TEXTDATA.TEXT_VAL)
                 .from(GeodbTextdata.GEODB_TEXTDATA)
-                .where(GeodbTextdata.GEODB_TEXTDATA.TEXT_TYPE.eq(500100000))
+                .where(GeodbTextdata.GEODB_TEXTDATA.TEXT_TYPE
+                        .eq(500100000))
                 .fetchMaps();
 
         for (Map<String, Object> m : result) {
@@ -135,35 +141,6 @@ public class DBAdapterImpl {
             alleStaedte.put(key, value);
         }
         close();
-    }
-
-    public SocialMessage[] getSocialMessages(String table, Timestamp begin, Timestamp end) {
-        List<SocialMessage> messages = new ArrayList<SocialMessage>();
-        open();
-        try {
-            if (begin.getTime() == 0L && end.getTime() == 0L) {
-                end = new Timestamp(Long.MAX_VALUE);
-            }
-
-            Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation FROM " + table
-                    + " WHERE timestamp >= '" + begin + "' AND timestamp <= '" + end + "'");
-
-            while (resultSet.next()) {
-                SocialMessage sm = new SocialMessage();
-                sm.setId(resultSet.getBigDecimal(1));
-                sm.setText(resultSet.getString(2));
-                sm.setTimestamp(resultSet.getTimestamp(3));
-                sm.setGeolocation(resultSet.getString(4));
-                messages.add(sm);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            close();
-        }
-        return messages.toArray(new SocialMessage[messages.size()]);
     }
 
     public Result<Record> getSocialMessages(Table table, Timestamp begin, Timestamp end) {
@@ -181,16 +158,62 @@ public class DBAdapterImpl {
                 .fetch();
         System.out.println("between " + begin + " and " + end);
         System.out.println(result);
-//            while (result.next()) {
-//                SocialMessage sm = new SocialMessage();
-//                sm.setId(result.getBigDecimal(1));
-//                sm.setText(result.getString(2));
-//                sm.setTimestamp(result.getTimestamp(3));
-//                sm.setGeolocation(result.getString(4));
-//                messages.add(sm);
-//            }
 
         close();
         return result;//messages.toArray(new SocialMessage[messages.size()]);
+    }
+
+    public List<Map<String, Object>> getSocialMessages(String table, Timestamp begin, Timestamp end) {
+        open();
+        if (begin.getTime() == 0L && end.getTime() == 0L) {
+            end = new Timestamp(Long.MAX_VALUE);
+        }
+        System.out.println(begin);
+        List<Map<String, Object>> result = null;
+        result = create
+                .select()
+                .from(tableByName(table))
+                .where(fieldByName(table,"timestamp")
+                        .greaterOrEqual(begin.toString())
+                        .and(fieldByName(table,"timestamp")
+                                .lessOrEqual(end.toString())))
+                .fetchMaps();
+        System.out.println(result);
+        close();
+        return result;
+    }
+
+    public List<Map<String, Object>> getInfoZurLocId(int loc_id) {
+        open();
+        List<Map<String, Object>> result = create
+                .select(fieldByName("geodb_type_names","name"), fieldByName("geodb_textdata","text_val"))
+                .from(tableByName("geodb_textdata"))
+                .leftOuterJoin(tableByName("geodb_type_names"))
+                .on(fieldByName("geodb_textdata", "text_type")
+                        .equal(fieldByName("geodb_type_names", "type_id")))
+                .where(fieldByName("loc_id")
+                        .equal(loc_id))
+                .fetchMaps();
+        close();
+        System.out.println(result);
+        return result;
+    }
+
+    public List<Map<String, Object>> getLocIdZumOrt(String ort) {
+        open();
+        List<Map<String, Object>> result =  create
+                    .select(fieldByName("geodb_type_names","name"), fieldByName("geodb_textdata","loc_id"))
+                    .from(tableByName("geodb_textdata"))
+                    .leftOuterJoin(tableByName("geodb_locations"))
+                    .on(fieldByName("geodb_locations", "loc_id").eq(fieldByName("geodb_textdata", "loc_id")))
+                    .leftOuterJoin(tableByName("geodb_type_names"))
+                    .on(fieldByName("geodb_locations", "loc_type").eq(fieldByName("geodb_type_names", "type_id")))
+                    .where(fieldByName("text_val")
+                            .equal(ort))
+                    .and(fieldByName("text_type").equal(500100000))
+                    .fetchMaps();
+        close();
+        System.out.println(result);
+        return result;
     }
 }

@@ -1,8 +1,3 @@
-import DBAdapter.tables.TweetsSturm;
-
-import java.sql.Timestamp;
-import java.util.Arrays;
-
 /**
  * Created with IntelliJ IDEA.
  * User: denisf
@@ -20,10 +15,12 @@ public class Test {
         String url = args[2];
 
         DBAdapterImpl dbAdapter = DBAdapterImpl.getInstance(userName,password,url);
-        System.out.println(Arrays.deepToString(dbAdapter.getSocialMessages("tweets_sturm", new Timestamp(0L), new Timestamp(
-                Long.MAX_VALUE))));
 
-        dbAdapter.getSocialMessages(TweetsSturm.TWEETS_STURM,new Timestamp(0L), new Timestamp(
-                Long.MAX_VALUE));
+        dbAdapter.getLocIdZumOrt("Hamburg");
+        dbAdapter.getInfoZurLocId(17838);
+        //System.out.println(Arrays.deepToString(dbAdapter.getSocialMessages("tweets_sturm", new Timestamp(0L), new Timestamp(Long.MAX_VALUE))));
+
+        //dbAdapter.getSocialMessages("tweets_sturm", new Timestamp(0L), new Timestamp(Long.MAX_VALUE));
+        //dbAdapter.getSocialMessages("tweets_sturm", new Timestamp(0L), new Timestamp(Long.MAX_VALUE));
     }
 }
