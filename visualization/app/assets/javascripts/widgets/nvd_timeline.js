@@ -3,9 +3,18 @@ nv.addGraph(function() {
                 .showDistX(true)
                 .showDistY(true)
                 .color(d3.scale.category10().range());
+    chart.useVoronoi(false);
 
-    //chart.xAxis.tickFormat(d3.format('.02f'))
-    chart.xAxis.tickFormat(function(d) { return moment(d).format("DD.MM. HH:mm"); })
+    chart.scatter.dispatch.on('elementClick', function(e) {
+        console.log('element: ' + e.value);
+        console.dir(e.point);
+        console.dir(this);
+    });
+
+    chart.xAxis.tickFormat(function(d) { return moment(d.timestamp).format("DD.MM. HH:mm"); })
+    chart.x(function(d) {
+        return moment(d.x.timestamp);
+    })
     chart.yAxis.tickFormat(d3.format('.02f'))
 
     var svg = d3.select('#timeline').append('svg')
@@ -33,8 +42,8 @@ nv.addGraph(function() {
         for(var i=0; i<tweets.length; i++) {
             data[tweets[i].category_id].values.push({
                 y: Math.random(),
-                x: moment(tweets[i].timestamp),
-                size: 5,
+                x: tweets[i],
+                size: 10,
                 series: 0
             })
 
