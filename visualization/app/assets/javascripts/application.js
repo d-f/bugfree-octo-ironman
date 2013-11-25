@@ -13,6 +13,7 @@
 //= require websocket_rails/main
 //= require jquery
 //= require jquery_ujs
+//= require hamlcoffee
 //= require ../../../vendor/assets/javascripts/bootstrap.js
 //= require ../../../vendor/assets/javascripts/d3.js
 //= require ../../../vendor/assets/javascripts/nv.d3.js
@@ -33,4 +34,6 @@
 //= require ./widgets/map/MapControl.js
 //= require ./widgets/map/CategorySelection.js
 //= require ./widgets/map/Initializer.js
+//
+//= require_tree ./templates
 
