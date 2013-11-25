@@ -36,8 +36,8 @@ Generally, you should subscribe to the time-range event:
 
 Updating the time range (this will automatically result in a `time_range_updated` event as defined above:
 
-    // Again, UNIX timestamps in seconds
-    dispatcher.trigger('ui.update_range', {start: 123, end: 456})
+    var range = 4 * 3600; // 4 hours in seconds
+    dispatcher.trigger('ui.update_range', {range: range})
 
 To be notified of new tweets, you can do this:
 
@@ -67,3 +67,9 @@ Tweet objects have the following structure:
         category_id: 5,
         category_name: "Nonsense"
     }
+
+All categories can be retrieved as follows:
+
+    dispatcher.trigger('categories.get', {}, function(response) {
+        console.log(response) # => [{id: 5, name: "some category"}]
+    })

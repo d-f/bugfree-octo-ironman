@@ -13,4 +13,8 @@ class WebsocketController < WebsocketRails::BaseController
     WebsocketRails[:time].trigger(:simulated_time_updated, SimulatedTime.get)
     trigger_success SimulatedTime.get
   end
+
+  def get_categories
+    trigger_success Category.order(:id).all.to_json
+  end
 end

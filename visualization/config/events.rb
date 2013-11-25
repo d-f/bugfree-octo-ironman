@@ -26,4 +26,8 @@ WebsocketRails::EventMap.describe do
     subscribe :get, :to => WebsocketController, :with_method => :get_time
     subscribe :set, :to => WebsocketController, :with_method => :set_time
   end
+
+  namespace :categories do
+    subscribe :get, :to => WebsocketController, :with_method => :get_categories
+  end
 end
