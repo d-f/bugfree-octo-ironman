@@ -19,6 +19,7 @@ class TweetWorker
       data[:category_name] = category.try!(:name)
 
       data[:geolocation] = nilWhenEmpty(t.geolocation) || nilWhenEmpty(t.information.try!(:geolocation))
+      data[:geolocation] = geolocation_to_json(data[:geolocation])
       data[:place] = nilWhenEmpty(t.place) || nilWhenEmpty(t.information.try!(:place))
 
       data
@@ -37,6 +38,14 @@ private
     # rows in database are not real SQL NULL's but the string "null" -_-"
     return nil if(x === "" || x === "null")
     x
+  end
+
+  def geolocation_to_json(x)
+    if x =~ /.*{.*=([0-9.]+), .*=([0-9.]+)}/
+      {:latitude => $1, :longitude => $2}
+    else
+      x
+    end
   end
 
 
