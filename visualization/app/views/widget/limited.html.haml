@@ -10,7 +10,20 @@
           Timeline
       .widget-body
         #timeline
-          %ul.chats
+          .selected-tweet
+            %ul.chats
+            .widget
+              .controls.widget-body
+                .btn-group
+                  %button.btn.btn-danger.dropdown-toggle{:type => "button", :"data-toggle" => "dropdown"}
+                    Rekategorisieren
+                    %span.caret
+                  %ul.dropdown-menu
+                    %li
+                      %a Help Request
+                      %a Support Request
+                      %a usw
+
 
   .col-md-6
     #map

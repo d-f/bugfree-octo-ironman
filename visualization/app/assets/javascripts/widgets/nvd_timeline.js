@@ -5,10 +5,22 @@ nv.addGraph(function() {
                 .color(d3.scale.category10().range());
     chart.useVoronoi(false);
 
+
+    var tweet_container = $('#timeline ul.chats');
+    tweet_container.closest('.selected-tweet').hide();
     chart.scatter.dispatch.on('elementClick', function(e) {
         console.log('element: ' + e.value);
         console.dir(e.point);
         console.dir(this);
+
+        var tweet = JST["tweet"]({
+            name: e.point.x.author,
+            body: e.point.x.text
+        });
+
+        tweet_container.html(tweet);
+        tweet_container.closest('.selected-tweet').show()
+
     });
 
     chart.xAxis.tickFormat(function(d) { return moment(d.timestamp).format("DD.MM. HH:mm"); })
