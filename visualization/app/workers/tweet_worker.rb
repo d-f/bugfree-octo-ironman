@@ -9,7 +9,18 @@ class TweetWorker
       start = SimulatedTime.now
     end
 
-    tweets = Tweet.where("timestamp >= ? and timestamp < ?", start, endd).to_a
+    tweets = Tweet.includes(:categories, :information).where("timestamp >= ? and timestamp < ?", start, endd).to_a
+    #tweets = [Tweet.includes(:categories, :information).first(:offset => rand(Tweet.count))] # for testing
+    tweets = tweets.map do |t|
+      data = t.attributes
+
+      category = t.categories.first
+      data[:category_id] = category.try!(:id)
+      data[:category_name] = category.try!(:name)
+
+      data
+    end
+
     if tweets.length > 0
       WebsocketRails[:tweets].trigger(:new, tweets)
     end
