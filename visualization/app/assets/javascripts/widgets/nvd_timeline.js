@@ -34,7 +34,7 @@ nv.addGraph(function() {
             data[tweets[i].category_id].values.push({
                 y: Math.random(),
                 x: moment(tweets[i].timestamp),
-                size: 100,
+                size: 5,
                 series: 0
             })
 
