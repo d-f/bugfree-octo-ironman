@@ -3,7 +3,7 @@ window.dispatcher = new WebSocketRails('localhost:3001/websocket')
 
 channel = dispatcher.subscribe('tweets')
 channel.bind "new", (tweets) ->
-    [console.log(t) for t in tweets]
+    #[console.log(t) for t in tweets]
 
 resizeTimeout = null
 onResize = ->

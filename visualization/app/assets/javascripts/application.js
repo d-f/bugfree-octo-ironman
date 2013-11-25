@@ -31,6 +31,6 @@
 //= require ./widgets/map/DataReceiver.js
 //= require ./widgets/map/DataManager.js
 //= require ./widgets/map/MapControl.js
-//= require ./widgets/map/SettingsListener.js
+//= require ./widgets/map/CategorySelection.js
 //= require ./widgets/map/Initializer.js
 

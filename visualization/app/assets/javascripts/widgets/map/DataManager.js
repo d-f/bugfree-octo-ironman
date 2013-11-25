@@ -1,5 +1,5 @@
 /** Die Daten-Verwaltung speichert den Datenbestand und führt Änderungen darauf aus.
- * @param $dbCon Verweis auf die Datenbank-Verbindung zum Abruf der fehlenden Daten.
+ * @param receiver Verweis auf die Datenbank-Verbindung zum Abruf der fehlenden Daten.
  * @param $refreshInterval Zeitspanne für das Prüfintervall.
  * @param $initialTimespan Die ausgewählte Start-Zeitspanne (Format: "15-40"). */
 function DataManager (recv, $refreshInterval, $initialTimespan) {
@@ -164,24 +164,24 @@ function DataManager (recv, $refreshInterval, $initialTimespan) {
   function newPost (post) {
   
     // Die Kategorie bestimmen, für neue Kategorien eine Layergruppe erstellen.
-    var category = "dbg"; //post['category_name'];
-    if (category == "Trashtalk") return;    // Rücksprung bei Müll.
+    var category = post['category_name'];
+    //if (category == "trashtalk") return;    // Rücksprung bei Müll.
     if (layers [category] == null) {
       console.log ("Creating category '"+category+"' layergroup!");
       layers [category] = L.layerGroup (); 
     } 
-  
-    //TODO Einen absolut-Zähler einführen. 
+    
   
     // Eine Karte kümmert sich sinnvollerweise nur um Einträge mit Positionsangaben ;-) 
-    if (post['geolocation'] != "null") {
+    if (post['geolocation'] != null) {
 
-      // Position bestimmen und Markierung erstellen.
-      var coords = post['geolocation'].split (", ");
-      coords[0] = coords[0].substring (21);
-      coords[1] = coords[1].substring (10, coords[1].length-1);
-      var position = coords[0]+" | "+coords[1];
-      var marker = L.marker ([coords[0], coords[1]], {icon: myIcon}); 
+      //TODO Icon-Bestimmung ("switch") anhand der Kategorie!
+
+      // Position bestimmen und Markierung erstellen.   
+      var lat = post['geolocation']['latitude'];
+      var lng = post['geolocation']['longitude'];         
+      var marker = L.marker ([lat, lng], {icon: myIcon}); 
+      var position = lat+" | "+lng;  
 
       // Die Markierung dem Layer hinzufügen und in die Datenstruktur eintragen.
       layers [category].addLayer (marker);    
@@ -189,24 +189,30 @@ function DataManager (recv, $refreshInterval, $initialTimespan) {
                                               "category": category,
                                               "marker"  : marker }, true);                      
       
+      // Formatiert den SQL-Datumsstring in ein (besser) lesbares Format um.
+      var dtArr = post['timestamp'].split ("T");
+      var dArr  = dtArr[0].split ("-");
+      var tArr  = dtArr[1].substring(0, 8).split (":");   
+      var date  = dArr[2]+"."+dArr[1]+"."+dArr[0]+" "+tArr[0]+":"+tArr[1]+":"+tArr[2];
+      
       // Erstellt die Detail-Informationen und bindet sie an die Markierung.
       marker.bindPopup (
-        "<table cellspacing='0'>                                                "+
-        "  <tr><td><b>Kategorie:  </b></td><td>"+category         +"</td></tr>  "+
-        "  <tr><td><b>Gesendet:   </b></td><td>"+post['timestamp']+"</td></tr>  "+
-        "  <tr><td><b>Absender:   </b></td><td>"+post['author']   +"</td></tr>  "+
-        "  <tr><td><b>Nachricht:  </b></td><td>"+post['text']     +"</td></tr>  "+
-        "  <tr><td><b>Koordinaten:</b></td><td>"+position         +"</td></tr>  "+
-        "</table>                                                               "
+        "<table cellspacing='0'>                                             "+
+        "  <tr><td><b>Kategorie:  </b></td><td>"+category      +"</td></tr>  "+
+        "  <tr><td><b>Gesendet:   </b></td><td>"+date          +"</td></tr>  "+
+        "  <tr><td><b>Absender:   </b></td><td>"+post['author']+"</td></tr>  "+
+        "  <tr><td><b>Nachricht:  </b></td><td>"+post['text']  +"</td></tr>  "+
+        "  <tr><td><b>Koordinaten:</b></td><td>"+position      +"</td></tr>  "+
+        "</table>                                                            "
       );  
       
       // Konsolenausgabe für Debug-Zwecke.
-      console.log ("[DataManager] Added map entry:"                 +"\n"+
-                   "               - Category: "+ category          +"\n"+
-                   "               - Date    : "+ post['timestamp'] +"\n"+
-                   "               - Position: "+ position          +"\n"+
-                   "               - Author  : "+ post['author']    +"\n"+
-                   "               - Message : "+ post['text']          );  
+      console.log ("[DataManager] Added map entry:"             +"\n"+
+                   "               - Category: "+ category      +"\n"+
+                   "               - Date    : "+ date          +"\n"+
+                   "               - Position: "+ position      +"\n"+                 
+                   "               - Author  : "+ post['author']+"\n"+
+                   "               - Message : "+ post['text']       );  
     }
   }  
 
