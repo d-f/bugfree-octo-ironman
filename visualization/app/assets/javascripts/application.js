@@ -22,9 +22,9 @@
 //= require ./widgets/widget_manager.js.coffee
 //= require ./widgets/streamgraph.js.coffee
 //= require ./widgets/nvd_timeline.js
+//= require ./global.js.coffee
+//= require ./time_display.js.coffee
 //
-// require_tree .
-
 // Load javascript classes required for the Leaflet map widget.
 //= require ../../../vendor/assets/javascripts/leaflet/leaflet.js
 //= require ./widgets/map/LinkedList.js
