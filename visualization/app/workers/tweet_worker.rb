@@ -18,6 +18,9 @@ class TweetWorker
       data[:category_id] = category.try!(:id)
       data[:category_name] = category.try!(:name)
 
+      data[:geolocation] = nilWhenEmpty(t.geolocation) || nilWhenEmpty(t.information.try!(:geolocation))
+      data[:place] = nilWhenEmpty(t.place) || nilWhenEmpty(t.information.try!(:place))
+
       data
     end
 
@@ -28,6 +31,13 @@ class TweetWorker
     TweetWorker.set_last_execution
   end
 
+private
+
+  def nilWhenEmpty(x)
+    # rows in database are not real SQL NULL's but the string "null" -_-"
+    return nil if(x === "" || x === "null")
+    x
+  end
 
 
   @@last_execution_key = "tweet_worker:last_execution"
