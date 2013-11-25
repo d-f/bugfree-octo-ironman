@@ -23,6 +23,7 @@
 //= require ./widgets/widget_manager.js.coffee
 //= require ./widgets/streamgraph.js.coffee
 //= require ./widgets/nvd_timeline.js
+//= require ./widgets/tweet_text.js
 //= require ./global.js.coffee
 //= require ./time_display.js.coffee
 //

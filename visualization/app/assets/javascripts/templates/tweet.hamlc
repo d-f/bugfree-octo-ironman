@@ -1,0 +1,5 @@
+%li.in
+  .message
+    %a.name= @name
+    %span.date-time= @time
+    %span.body= @body
