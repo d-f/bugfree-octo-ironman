@@ -35,7 +35,7 @@ public class TwitterDataAnalyser implements IDataSource {
 				end = new Timestamp(Long.MAX_VALUE);
 			}
 
-			resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation FROM " + DATABASE + "." + table
+			resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation, placce FROM " + DATABASE + "." + table
 					+ " WHERE timestamp >= '" + begin + "' AND timestamp <= '" + end + "'");
 
 			while (resultSet.next()) {
@@ -44,6 +44,7 @@ public class TwitterDataAnalyser implements IDataSource {
 				sm.setText(resultSet.getString(2));
 				sm.setTimestamp(resultSet.getTimestamp(3));
 				sm.setGeolocation(resultSet.getString(4));
+				sm.setPlace(resultSet.getString(5));//Hinzugefügt um Ort zu erhalten (AWH)
 				messages.add(sm);
 			}
 
