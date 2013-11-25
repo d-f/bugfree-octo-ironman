@@ -13,7 +13,14 @@ nv.addGraph(function() {
     var width = container.width();
     svg.attr({width: width, height: 0.618*width});
 
-    var data = [{key: "Group 0", values: []}];
+    var data = [
+        {key: "Help Request", values: []},
+        {key: "Support Request", values: []},
+        {key: "Support Offer", values: []},
+        {key: "Information Request", values: []},
+        {key: "Information Offer", values: []},
+        {key: "Trashtalk", values: []}
+    ];
 
     svg
         .datum(data)
@@ -24,11 +31,10 @@ nv.addGraph(function() {
     tweets_channel = dispatcher.subscribe('tweets')
     tweets_channel.bind("new", function(tweets) {
         for(var i=0; i<tweets.length; i++) {
-
-            data[0].values.push({
-                y: 0,
+            data[tweets[i].category_id].values.push({
+                y: Math.random(),
                 x: moment(tweets[i].timestamp),
-                size: 10,
+                size: 100,
                 series: 0
             })
 
