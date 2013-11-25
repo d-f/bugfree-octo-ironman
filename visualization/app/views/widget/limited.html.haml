@@ -4,6 +4,35 @@
 
 .row
   .col-md-6
-    #timeline
+    .widget
+      .widget-header
+        .title
+          Timeline
+      .widget-body
+        #timeline
+          .selected-tweet
+            %ul.chats
+            .widget
+              .controls.widget-body
+                .btn-group
+                  %button.btn.btn-danger.dropdown-toggle{:type => "button", :"data-toggle" => "dropdown"}
+                    Rekategorisieren
+                    %span.caret
+                  %ul.dropdown-menu
+                    %li
+                      %a Help Request
+                      %a Support Request
+                      %a usw
+
+
   .col-md-6
     #map
+
+.row
+  .col-md-6
+    .widget
+      .widget-header
+        .title
+          Tweets
+      .widget-body
+        %ul#tweets.chats.scroll-container

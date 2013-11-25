@@ -14,6 +14,10 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
 gem 'haml-rails'
 
+# JavaScript templating
+gem 'haml_coffee_assets'
+gem 'execjs'
+
 gem 'composite_primary_keys'
 
 # Use jquery as the JavaScript library

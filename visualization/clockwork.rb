@@ -4,6 +4,7 @@ require './config/environment'
 
 include Clockwork
 
+TweetWorker.sidekiq_options(:retry => false)
 
 handler do |job|
   TweetWorker.perform_async("msg")

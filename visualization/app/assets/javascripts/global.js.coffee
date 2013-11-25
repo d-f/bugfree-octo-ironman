@@ -7,3 +7,5 @@ $(".datetime_picker").datetimepicker
 $("#simulated_time").on 'change',    ->
     time = "#{$(this).val()}+00:00"
     dispatcher.trigger('time.set', {"time": time})
+
+$('.dropdown-toggle').dropdown()
