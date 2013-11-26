@@ -135,15 +135,16 @@ public class TwitterDataAnalyser implements IDataSource {
 	@Override
 	public void storeMetadata(SocialMessage[] socialMessages,
 			boolean deleteFirst) {
-		PreparedStatement preparedDeleteStatement;
+		PreparedStatement preparedDeleteClassificationStatement;
 		PreparedStatement preparedInsertClassificationStatement;
+		PreparedStatement preparedDeleteGeoLocationStatement;
 		PreparedStatement preparedInsertGeoLocationStatement;
 		// TODO not only categories
 		try {
 			open();
 
 			// delete old classification
-			preparedDeleteStatement = (PreparedStatement) connect
+			preparedDeleteClassificationStatement = (PreparedStatement) connect
 					.prepareStatement("DELETE FROM " + DATABASE
 							+ ".categories_tweets WHERE tweet_id=?");
 			// insert new classification
@@ -152,21 +153,39 @@ public class TwitterDataAnalyser implements IDataSource {
 							+ ".categories_tweets VALUES (?,?,?)");
 			// TODO geolocation
 			// insert new geolocation
-//			preparedInsertGeoLocationStatement = (PreparedStatement) connect
-//					.prepareStatement("UPDATE ...");
+			// preparedInsertGeoLocationStatement = (PreparedStatement) connect
+			// .prepareStatement("UPDATE ...");
+
+			// delete old geolocation
+			preparedDeleteGeoLocationStatement = (PreparedStatement) connect
+					.prepareStatement("DELETE FROM " + DATABASE
+							+ ".information WHERE tweet_id=?");
+			// insert new geolocation
+			preparedInsertGeoLocationStatement = (PreparedStatement) connect
+					.prepareStatement("INSERT INTO " + DATABASE
+							+ ".information VALUES (?,?)");
 
 			for (int i = 0; i < socialMessages.length; i++) {
-				preparedDeleteStatement.setBigDecimal(1,
+				preparedDeleteClassificationStatement.setBigDecimal(1,
 						socialMessages[i].getId());
 				if (deleteFirst) {
-					preparedDeleteStatement.executeUpdate();
+					preparedDeleteClassificationStatement.executeUpdate();
+					preparedDeleteGeoLocationStatement.executeUpdate();
 				}
+
 				preparedInsertClassificationStatement.setBigDecimal(1,
 						socialMessages[i].getId());
 				preparedInsertClassificationStatement.setInt(2,
 						socialMessages[i].getCategory());
-				preparedInsertClassificationStatement.setString(3,"1");
+				preparedInsertClassificationStatement.setString(3, "1");
 				preparedInsertClassificationStatement.executeUpdate();
+
+				preparedInsertGeoLocationStatement.setBigDecimal(1,
+						socialMessages[i].getId());
+				preparedInsertGeoLocationStatement.setString(2,
+						socialMessages[i].getGeolocation());
+				preparedInsertGeoLocationStatement.executeUpdate();
+
 				if ((i % 100) == 0) {
 					System.out.println(i);
 				}
