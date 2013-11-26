@@ -131,6 +131,7 @@ public class GermanStopWordsTokenizerFactory extends StopTokenizerFactory{
 	    STOP_SET.add("unser");
 	    STOP_SET.add("unsere");
 	    STOP_SET.add("unter");
+	    STOP_SET.add("unten");
 	    STOP_SET.add("vom");
 	    STOP_SET.add("von");
 	    STOP_SET.add("vor");

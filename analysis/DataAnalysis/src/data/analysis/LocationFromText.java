@@ -122,7 +122,7 @@ public class LocationFromText {
 	    //System.out.println("Tweet: "+message.getText());//TODO REMOVE
 	    
 	    for (Chunk chunk : chunkSet) {
-	    	int start = chunk.start();
+	    	/*int start = chunk.start();
 	        int end = chunk.end();
 	        CharSequence str = cs.subSequence(start,end);
 	        double distance = chunk.score();
@@ -132,9 +132,17 @@ public class LocationFromText {
 	        	shortestDistance = distance;
 	        	bestMatch = match;
 	        	matchedPlace = str.toString();
+	        }*///since we are not doing any analysis, we can do this instead
+	    	
+	    	
+	    	if(chunk.score() < shortestDistance){
+	        	shortestDistance = chunk.score();
+	        	bestMatch = chunk.type();
+	        	System.out.println("New best match: "+bestMatch);
 	        }
+	    	
 	        
-	       // System.out.printf("%15s  %15s   %8.1f\n", str, match, distance);//TODO REMOVE
+	       //System.out.printf("%15s  %15s   %8.1f\n", cs.subSequence(chunk.start(),chunk.end()), chunk.type(), chunk.score());//TODO REMOVE
 	    }
 	    
 	    message.setGeolocation(getGeolocationForPlace(bestMatch));
