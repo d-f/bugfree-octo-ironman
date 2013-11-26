@@ -17,14 +17,15 @@ public class TwitterDataAnalyser implements IDataSource {
 	private Statement statement;
 	private ResultSet resultSet;
 
-	private final static String HOST = "85.25.155.25";
-	private final static String PORT = "3306";
-	private final static String DATABASE = "MI_WS1314";
-	private final static String USER = "MIWS1314";
-	private final static String PASSWORD = "Oq1gk28@";
+	protected final static String HOST = "85.25.155.25";
+	protected final static String PORT = "3306";
+	protected final static String DATABASE = "MI_WS1314";
+	protected final static String USER = "MIWS1314";
+	protected final static String PASSWORD = "Oq1gk28@";
 
 	@Override
-	public SocialMessage[] getSocialMessages(String table, Timestamp begin, Timestamp end) {
+	public SocialMessage[] getSocialMessages(String table, Timestamp begin,
+			Timestamp end) {
 		ArrayList<SocialMessage> messages = new ArrayList<SocialMessage>();
 
 		try {
@@ -35,8 +36,13 @@ public class TwitterDataAnalyser implements IDataSource {
 				end = new Timestamp(Long.MAX_VALUE);
 			}
 
-			resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation FROM " + DATABASE + "." + table
-					+ " WHERE timestamp >= '" + begin + "' AND timestamp <= '" + end + "'");
+			resultSet = statement
+					.executeQuery("SELECT id, text, timestamp, geolocation, place FROM "
+							+ DATABASE
+							+ "."
+							+ table
+							+ " WHERE timestamp >= '"
+							+ begin + "' AND timestamp <= '" + end + "'");
 
 			while (resultSet.next()) {
 				SocialMessage sm = new SocialMessage();
@@ -44,6 +50,8 @@ public class TwitterDataAnalyser implements IDataSource {
 				sm.setText(resultSet.getString(2));
 				sm.setTimestamp(resultSet.getTimestamp(3));
 				sm.setGeolocation(resultSet.getString(4));
+				sm.setPlace(resultSet.getString(5));// Hinzugefuegt um Ort zu
+													// erhalten (AWH)
 				messages.add(sm);
 			}
 
@@ -61,7 +69,8 @@ public class TwitterDataAnalyser implements IDataSource {
 	}
 
 	@Override
-	public SocialMessage[] getTrainMessages(String table, Map<Integer, String> categories, int limit) {
+	public SocialMessage[] getTrainMessages(String table,
+			Map<Integer, String> categories, int limit) {
 		SocialMessage[] messages = new SocialMessage[limit * categories.size()];
 
 		try {
@@ -70,8 +79,10 @@ public class TwitterDataAnalyser implements IDataSource {
 
 			int k = 0;
 			for (Map.Entry<Integer, String> entry : categories.entrySet()) {
-				resultSet = statement.executeQuery("SELECT text, category FROM " + DATABASE + "." + table
-						+ " WHERE category=" + entry.getKey() + " LIMIT " + limit);
+				resultSet = statement
+						.executeQuery("SELECT text, category FROM " + DATABASE
+								+ "." + table + " WHERE category="
+								+ entry.getKey() + " LIMIT " + limit);
 
 				while (resultSet.next()) {
 					messages[k] = new SocialMessage();
@@ -101,7 +112,8 @@ public class TwitterDataAnalyser implements IDataSource {
 		try {
 			open();
 			statement = (Statement) connect.createStatement();
-			resultSet = statement.executeQuery("SELECT id, name FROM " + DATABASE + "." + table + " ORDER BY id ASC");
+			resultSet = statement.executeQuery("SELECT id, name FROM "
+					+ DATABASE + "." + table + " ORDER BY id ASC");
 
 			while (resultSet.next()) {
 				categories.put(resultSet.getInt(1), resultSet.getString(2));
@@ -121,26 +133,40 @@ public class TwitterDataAnalyser implements IDataSource {
 	}
 
 	@Override
-	public void storeMetadata(SocialMessage[] socialMessages) {
+	public void storeMetadata(SocialMessage[] socialMessages,
+			boolean deleteFirst) {
 		PreparedStatement preparedDeleteStatement;
-		PreparedStatement preparedInsertStatement;
+		PreparedStatement preparedInsertClassificationStatement;
+		PreparedStatement preparedInsertGeoLocationStatement;
 		// TODO not only categories
 		try {
 			open();
 
 			// delete old classification
-			preparedDeleteStatement = (PreparedStatement) connect.prepareStatement("DELETE FROM " + DATABASE
-					+ ".categories_tweets WHERE tweet_id=?");
+			preparedDeleteStatement = (PreparedStatement) connect
+					.prepareStatement("DELETE FROM " + DATABASE
+							+ ".categories_tweets WHERE tweet_id=?");
 			// insert new classification
-			preparedInsertStatement = (PreparedStatement) connect.prepareStatement("INSERT INTO " + DATABASE
-					+ ".categories_tweets VALUES (?,?)");
+			preparedInsertClassificationStatement = (PreparedStatement) connect
+					.prepareStatement("INSERT INTO " + DATABASE
+							+ ".categories_tweets VALUES (?,?,?)");
+			// TODO geolocation
+			// insert new geolocation
+//			preparedInsertGeoLocationStatement = (PreparedStatement) connect
+//					.prepareStatement("UPDATE ...");
 
 			for (int i = 0; i < socialMessages.length; i++) {
-				preparedDeleteStatement.setBigDecimal(1, socialMessages[i].getId());
-				preparedDeleteStatement.executeUpdate();
-				preparedInsertStatement.setBigDecimal(1, socialMessages[i].getId());
-				preparedInsertStatement.setInt(2, socialMessages[i].getCategory());
-				preparedInsertStatement.executeUpdate();
+				preparedDeleteStatement.setBigDecimal(1,
+						socialMessages[i].getId());
+				if (deleteFirst) {
+					preparedDeleteStatement.executeUpdate();
+				}
+				preparedInsertClassificationStatement.setBigDecimal(1,
+						socialMessages[i].getId());
+				preparedInsertClassificationStatement.setInt(2,
+						socialMessages[i].getCategory());
+				preparedInsertClassificationStatement.setString(3,"1");
+				preparedInsertClassificationStatement.executeUpdate();
 				if ((i % 100) == 0) {
 					System.out.println(i);
 				}
@@ -159,8 +185,9 @@ public class TwitterDataAnalyser implements IDataSource {
 
 	private void open() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
-		connect = (Connection) DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE
-				+ "?user=" + USER + "&password=" + PASSWORD);
+		connect = (Connection) DriverManager.getConnection("jdbc:mysql://"
+				+ HOST + ":" + PORT + "/" + DATABASE + "?user=" + USER
+				+ "&password=" + PASSWORD);
 	}
 
 	private void close() throws SQLException {

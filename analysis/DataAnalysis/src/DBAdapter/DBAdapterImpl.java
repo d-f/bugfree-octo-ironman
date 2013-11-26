@@ -1,10 +1,14 @@
-import DBAdapter.Tables;
+package DBAdapter;
 import data.analysis.SocialMessage;
+
 import org.jooq.*;
 import org.jooq.impl.DSL;
 
+import com.mysql.jdbc.Statement;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -24,6 +28,8 @@ public class DBAdapterImpl {
     private String url;
     private Connection conn = null;
     private DSLContext create;
+	private Statement statement;
+	private ResultSet resultSet;
     public static Set<String> alleStaedte = new HashSet<>();
 
     private DBAdapterImpl(String name, String pass, String url) {
@@ -124,6 +130,7 @@ public class DBAdapterImpl {
         return map;
     }
 
+    //TODO Abfrage bzw. Tabelle übberarbeiten einige Orte sind nicht in der Tabelle, obwohl in der Datenbank! Beispiel Wittenberg und Zug!
     public List<Map<String, Object>> getKoordinatenVonOrt(String ort){
         open();
         List<Map<String, Object>> result = create
@@ -140,7 +147,7 @@ public class DBAdapterImpl {
 
     //Sollte nicht genutzt werden! Stattdessen auf die Klassenvariable zugreifen!! Diese wird
     //bereits beim Initialisieren der Instanz befuellt
-    private void getAlleStaedteNamen() {
+    private void getAlleStaedteNamen() { //TODO Abfrage bzw. Tabelle übberarbeiten einige Orte sind nicht in der Tabelle, obwohl in der Datenbank! Beispiel Wittenberg und Zug!
         open();
         /*Result<Record2<Object, Object>> result = create
                 .select(fieldByName("geodb_textdata","loc_id"),fieldByName("geodb_textdata","text_val"))
@@ -177,7 +184,45 @@ public class DBAdapterImpl {
 
         close();
     }
+    
+    //Hinzugefügt (AWH) zum Testen, da andere Methoden nicht brauchbar
+    
+    public SocialMessage[] getSocialMessagesArray(String table, Timestamp begin, Timestamp end) {
+		ArrayList<SocialMessage> messages = new ArrayList<SocialMessage>();
 
+		try {
+			open();
+			
+			statement = (Statement) conn.createStatement();
+			
+			if (begin.getTime() == 0L && end.getTime() == 0L) {
+				end = new Timestamp(Long.MAX_VALUE);
+			}
+
+			resultSet = statement.executeQuery("SELECT id, text, timestamp, geolocation, place FROM " + table
+					+ " WHERE timestamp >= '" + begin + "' AND timestamp <= '" + end + "'");
+
+			while (resultSet.next()) {
+				SocialMessage sm = new SocialMessage();
+				sm.setId(resultSet.getBigDecimal(1));
+				sm.setText(resultSet.getString(2));
+				sm.setTimestamp(resultSet.getTimestamp(3));
+				sm.setGeolocation(resultSet.getString(4));
+				sm.setPlace(resultSet.getString(5));//Hinzugefügt um Ort zu erhalten (AWH)
+				messages.add(sm);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+
+		return messages.toArray(new SocialMessage[messages.size()]);
+	}
+    
+    
+//TODO Bitte Methode anpassen, das wir SocialMessages Objekte bekommen
     public Result<Record> getSocialMessages(Table table, Timestamp begin, Timestamp end) {
         open();
         if (begin.getTime() == 0L && end.getTime() == 0L) {
@@ -198,6 +243,7 @@ public class DBAdapterImpl {
         return result;//messages.toArray(new SocialMessage[messages.size()]);
     }
 
+  //TODO Bitte Methode anpassen, das wir SocialMessages Objekte bekommen
     public List<Map<String, Object>> getSocialMessages(String table, Timestamp begin, Timestamp end) {
         open();
         if (begin.getTime() == 0L && end.getTime() == 0L) {
