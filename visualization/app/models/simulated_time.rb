@@ -27,6 +27,18 @@ class SimulatedTime
       TweetWorker.clear_last_execution
     end
 
+    def get_range
+      range = $redis.get("simulated_time_range")
+      if range.nil?
+        $redis.set("simulated_time_range", 0)
+        range = 0
+      end
+      range.to_i
+    end
+
+    def set_range(range)
+      $redis.set("simulated_time_range", range.to_i)
+    end
 
   end
 end

@@ -37,8 +37,8 @@ class TweetWorker
       DateTime.parse(time)
     end
 
-    def set_last_execution
-      time = SimulatedTime.now
+    def set_last_execution(given=nil)
+      time = given || SimulatedTime.now
       $redis.set(@@last_execution_key, time)
       time
     end
