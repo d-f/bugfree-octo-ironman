@@ -3,7 +3,7 @@ class WebsocketController < WebsocketRails::BaseController
     range = message[:range].to_i
     SimulatedTime.set_range range
     start = SimulatedTime.now - range.seconds
-    WebsocketRails[:time].trigger(:range_updated, {:start => start})
+    WebsocketRails[:time].trigger(:range_updated, {:start => start.to_i})
     TweetWorker.set_last_execution(start - 1.second)
   end
 
