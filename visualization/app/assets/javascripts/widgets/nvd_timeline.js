@@ -23,7 +23,7 @@ nv.addGraph(function() {
 
     });
 
-    chart.xAxis.tickFormat(function(d) { return moment(d.timestamp).format("DD.MM. HH:mm"); })
+    chart.xAxis.tickFormat(function(d) { return moment(d).format("DD.MM. HH:mm"); })
     chart.x(function(d) {
         return moment(d.x.timestamp);
     })
