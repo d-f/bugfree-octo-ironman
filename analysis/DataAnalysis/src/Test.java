@@ -1,7 +1,7 @@
 import java.sql.Timestamp;
 
-import data.analysis.LocationFromText;
 import DBAdapter.DBAdapterImpl;
+import data.analysis.LocationFromText;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,16 +15,10 @@ import DBAdapter.DBAdapterImpl;
 
 public class Test {
 	
-	protected final static String HOST = "85.25.155.25";
-	protected final static String PORT = "3306";
-	protected final static String DATABASE = "MI_WS1314";
-	protected final static String USER = "MIWS1314";
-	protected final static String PASSWORD = "Oq1gk28@";
-	
     public static void main(String ... args){
-        String userName = USER;
-        String password = PASSWORD;
-        String url = "jdbc:mysql://" +HOST; // args[2];
+        String userName = args[0];
+        String password = args[1];
+        String url = args[2];
 
                 
         DBAdapterImpl dbAdapter = DBAdapterImpl.getInstance(userName,password,url);

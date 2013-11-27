@@ -60,7 +60,7 @@ public class DBAdapterImpl {
         if (conn != null) {
             try {
                 conn.close();
-                System.out.println("CLOSED!!");
+                //System.out.println("CLOSED!!");
             } catch (SQLException ignore) {
             }
         }
@@ -72,7 +72,7 @@ public class DBAdapterImpl {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection(url, userName, password);
             create = DSL.using(conn, SQLDialect.MYSQL);
-            System.out.println("OPEN!!");
+            //System.out.println("OPEN!!");
         } catch (Exception e) {
             // For the sake of this tutorial, let's keep exception handling
             // simple
@@ -122,7 +122,7 @@ public class DBAdapterImpl {
                 .where(Tables.GEODB_COORDINATES.LOC_ID.like(locId))
                 .fetch();
 
-        //System.out.println("lat: " + lat + " : " + "lon: " + lon);
+        ////System.out.println("lat: " + lat + " : " + "lon: " + lon);
         Map<String, String> map = new HashMap<String, String>();
         map.put("lat", result.getValues(Tables.GEODB_COORDINATES.LAT).get(0).toString());
         map.put("lon", result.getValues(Tables.GEODB_COORDINATES.LON).get(0).toString());
@@ -130,7 +130,7 @@ public class DBAdapterImpl {
         return map;
     }
 
-    //TODO Abfrage bzw. Tabelle übberarbeiten einige Orte sind nicht in der Tabelle, obwohl in der Datenbank! Beispiel Wittenberg und Zug!
+    //TODO Abfrage bzw. Tabelle ï¿½bberarbeiten einige Orte sind nicht in der Tabelle, obwohl in der Datenbank! Beispiel Wittenberg und Zug!
     public List<Map<String, Object>> getKoordinatenVonOrt(String ort){
         open();
         List<Map<String, Object>> result = create
@@ -139,7 +139,7 @@ public class DBAdapterImpl {
                 .where(fieldByName("zip_coordinates","zc_location_name").eq(ort))
                 .groupBy(fieldByName("zip_coordinates","zc_location_name"))
                 .fetchMaps();
-        System.out.println(result);
+        //System.out.println(result);
         close();
         return result;
     }
@@ -147,7 +147,7 @@ public class DBAdapterImpl {
 
     //Sollte nicht genutzt werden! Stattdessen auf die Klassenvariable zugreifen!! Diese wird
     //bereits beim Initialisieren der Instanz befuellt
-    private void getAlleStaedteNamen() { //TODO Abfrage bzw. Tabelle übberarbeiten einige Orte sind nicht in der Tabelle, obwohl in der Datenbank! Beispiel Wittenberg und Zug!
+    private void getAlleStaedteNamen() { //TODO Abfrage bzw. Tabelle ï¿½bberarbeiten einige Orte sind nicht in der Tabelle, obwohl in der Datenbank! Beispiel Wittenberg und Zug!
         open();
         /*Result<Record2<Object, Object>> result = create
                 .select(fieldByName("geodb_textdata","loc_id"),fieldByName("geodb_textdata","text_val"))
@@ -179,13 +179,13 @@ public class DBAdapterImpl {
         for (Map<String,Object> map : result ){
            alleStaedte.add((String)map.get("zc_location_name"));
         }
-        //System.out.println(alleStaedte);
-        //System.out.println(alleStaedte.size());
+        ////System.out.println(alleStaedte);
+        ////System.out.println(alleStaedte.size());
 
         close();
     }
     
-    //Hinzugefügt (AWH) zum Testen, da andere Methoden nicht brauchbar
+    //Hinzugefï¿½gt (AWH) zum Testen, da andere Methoden nicht brauchbar
     
     public SocialMessage[] getSocialMessagesArray(String table, Timestamp begin, Timestamp end) {
 		ArrayList<SocialMessage> messages = new ArrayList<SocialMessage>();
@@ -208,7 +208,7 @@ public class DBAdapterImpl {
 				sm.setText(resultSet.getString(2));
 				sm.setTimestamp(resultSet.getTimestamp(3));
 				sm.setGeolocation(resultSet.getString(4));
-				sm.setPlace(resultSet.getString(5));//Hinzugefügt um Ort zu erhalten (AWH)
+				sm.setPlace(resultSet.getString(5));//Hinzugefï¿½gt um Ort zu erhalten (AWH)
 				messages.add(sm);
 			}
 
@@ -236,8 +236,8 @@ public class DBAdapterImpl {
                 .from(table)
                 .where(Tables.TWEETS_STURM.TIMESTAMP.greaterOrEqual(begin).and(Tables.TWEETS_STURM.TIMESTAMP.lessOrEqual(end)))
                 .fetch();
-        System.out.println("between " + begin + " and " + end);
-        System.out.println(result);
+        //System.out.println("between " + begin + " and " + end);
+        //System.out.println(result);
 
         close();
         return result;//messages.toArray(new SocialMessage[messages.size()]);
@@ -249,7 +249,7 @@ public class DBAdapterImpl {
         if (begin.getTime() == 0L && end.getTime() == 0L) {
             end = new Timestamp(Long.MAX_VALUE);
         }
-        System.out.println(begin);
+        //System.out.println(begin);
         List<Map<String, Object>> result = null;
         result = create
                 .select()
@@ -259,7 +259,7 @@ public class DBAdapterImpl {
                         .and(fieldByName(table,"timestamp")
                                 .lessOrEqual(end.toString())))
                 .fetchMaps();
-        System.out.println(result);
+        //System.out.println(result);
         close();
         return result;
     }
@@ -276,7 +276,7 @@ public class DBAdapterImpl {
                         .equal(loc_id))
                 .fetchMaps();
         close();
-        System.out.println(result);
+        //System.out.println(result);
         return result;
     }
 
@@ -294,7 +294,7 @@ public class DBAdapterImpl {
                     .and(fieldByName("text_type").equal(500100000))
                     .fetchMaps();
         close();
-        System.out.println(result);
+        //System.out.println(result);
         return result;
     }
 }

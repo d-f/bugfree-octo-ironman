@@ -46,22 +46,33 @@ public class InformationExtractor {
 
 		System.out.print("fetching test data... ");
 		twitterMessages = twitterData.getSocialMessages(TABLE_TWITTER_STURM,
-				new Timestamp(1382875200000L), new Timestamp(1382878800000L));
+				new Timestamp(0L), new Timestamp(Long.MAX_VALUE));
+//				new Timestamp(1382875200000L), new Timestamp(1382878800000L));
 		System.out.println(" done. " + twitterMessages.length
 				+ " messages found.");
 
-		System.out.println("categorize messages...");
+		System.out.print("locate messages... ");
 		for (int i = 0; i < twitterMessages.length; ++i) {
-			if ((i % 100) == 0 || i == twitterMessages.length - 1) {
-				System.out.println(i);
+			if ((i % 25) == 0) {
+				System.out.println();
 			}
+			System.out.printf("[%04d] ", i);
 			locator.getLocation(twitterMessages[i]);
-			twitterCategorizer.handle(twitterMessages[i]);
 		}
 		System.out.println(" done.");
+		
+//		System.out.print("categorize messages... ");
+//		for (int i = 0; i < twitterMessages.length; ++i) {
+//			if ((i % 25) == 0) {
+//				System.out.println();
+//			}
+//			System.out.printf("[%04d] ", i);
+//			twitterCategorizer.handle(twitterMessages[i]);
+//		}
+//		System.out.println(" done.");
 
 		System.out.println("save metadata...");
-		twitterData.storeMetadata(twitterMessages, true);
+		twitterData.storeMetadata(twitterMessages);
 		System.out.println(" done.");
 
 	}

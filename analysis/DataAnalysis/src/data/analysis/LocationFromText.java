@@ -112,12 +112,12 @@ public class LocationFromText {
 	
 		Chunking chunking = chunker.chunk(message.getText());
 		
-	    CharSequence cs = chunking.charSequence();
+//	    CharSequence cs = chunking.charSequence();
 	    Set<Chunk> chunkSet = chunking.chunkSet();
 	    
 	    double shortestDistance = maxDistance+1;
 	    String bestMatch = "null";
-	    String matchedPlace = "null";
+//	    String matchedPlace = "null";
 	    
 	    //System.out.println("Tweet: "+message.getText());//TODO REMOVE
 	    
@@ -138,7 +138,7 @@ public class LocationFromText {
 	    	if(chunk.score() < shortestDistance){
 	        	shortestDistance = chunk.score();
 	        	bestMatch = chunk.type();
-	        	System.out.println("New best match: "+bestMatch);
+//	        	System.out.println("New best match: "+bestMatch);
 	        }
 	    	
 	        

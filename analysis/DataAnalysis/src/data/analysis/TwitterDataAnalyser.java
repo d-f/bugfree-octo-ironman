@@ -133,13 +133,11 @@ public class TwitterDataAnalyser implements IDataSource {
 	}
 
 	@Override
-	public void storeMetadata(SocialMessage[] socialMessages,
-			boolean deleteFirst) {
+	public void storeMetadata(SocialMessage[] socialMessages) {
 		PreparedStatement preparedDeleteClassificationStatement;
 		PreparedStatement preparedInsertClassificationStatement;
-		PreparedStatement preparedDeleteGeoLocationStatement;
 		PreparedStatement preparedInsertGeoLocationStatement;
-		// TODO not only categories
+
 		try {
 			open();
 
@@ -147,48 +145,43 @@ public class TwitterDataAnalyser implements IDataSource {
 			preparedDeleteClassificationStatement = (PreparedStatement) connect
 					.prepareStatement("DELETE FROM " + DATABASE
 							+ ".categories_tweets WHERE tweet_id=?");
+
 			// insert new classification
 			preparedInsertClassificationStatement = (PreparedStatement) connect
 					.prepareStatement("INSERT INTO " + DATABASE
 							+ ".categories_tweets VALUES (?,?,?)");
-			// TODO geolocation
-			// insert new geolocation
-			// preparedInsertGeoLocationStatement = (PreparedStatement) connect
-			// .prepareStatement("UPDATE ...");
 
-			// delete old geolocation
-			preparedDeleteGeoLocationStatement = (PreparedStatement) connect
-					.prepareStatement("DELETE FROM " + DATABASE
-							+ ".information WHERE tweet_id=?");
-			// insert new geolocation
+			// TODO geolocation
 			preparedInsertGeoLocationStatement = (PreparedStatement) connect
-					.prepareStatement("INSERT INTO " + DATABASE
-							+ ".information VALUES (?,?)");
+					.prepareStatement("INSERT INTO "
+							+ DATABASE
+							+ ".information VALUES (?,?,?) ON DUPLICATE KEY UPDATE geolocation=?, place=?");
 
 			for (int i = 0; i < socialMessages.length; i++) {
 				preparedDeleteClassificationStatement.setBigDecimal(1,
 						socialMessages[i].getId());
-				if (deleteFirst) {
-					preparedDeleteClassificationStatement.executeUpdate();
-					preparedDeleteGeoLocationStatement.executeUpdate();
-				}
+				preparedDeleteClassificationStatement.executeUpdate();
 
 				preparedInsertClassificationStatement.setBigDecimal(1,
 						socialMessages[i].getId());
 				preparedInsertClassificationStatement.setInt(2,
 						socialMessages[i].getCategory());
-				preparedInsertClassificationStatement.setString(3, "1");
+				preparedInsertClassificationStatement.setString(3,
+						socialMessages[i].getConfidence());
 				preparedInsertClassificationStatement.executeUpdate();
 
 				preparedInsertGeoLocationStatement.setBigDecimal(1,
 						socialMessages[i].getId());
 				preparedInsertGeoLocationStatement.setString(2,
 						socialMessages[i].getGeolocation());
+				preparedInsertGeoLocationStatement.setString(3,
+						socialMessages[i].getPlace());
+				preparedInsertGeoLocationStatement.setString(4,
+						socialMessages[i].getGeolocation());
+				preparedInsertGeoLocationStatement.setString(5,
+						socialMessages[i].getPlace());
 				preparedInsertGeoLocationStatement.executeUpdate();
 
-				if ((i % 100) == 0) {
-					System.out.println(i);
-				}
 			}
 
 		} catch (Exception e) {

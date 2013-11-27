@@ -38,6 +38,6 @@ public interface IDataSource {
 	 * @param socialMessages the message
 	 * @param deleteFirst set true if you want to delete the element before you insert the new one
 	 */
-	public void storeMetadata(SocialMessage[] socialMessages, boolean deleteFirst);
+	public void storeMetadata(SocialMessage[] socialMessages);
 	
 }
