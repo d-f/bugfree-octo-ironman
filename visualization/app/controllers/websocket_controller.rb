@@ -1,7 +1,14 @@
 class WebsocketController < WebsocketRails::BaseController
-  def update_range
-    WebsocketRails[:channel_name].trigger(:event_name, {:start => message})
-    WebsocketRails[:ui].trigger(:time_range_updated, {:start => 999, :end => 111})
+  def set_range
+    range = message[:range].to_i
+    SimulatedTime.set_range range
+    start = SimulatedTime.now - range.seconds
+    WebsocketRails[:time].trigger(:range_updated, {:start => start.to_i})
+    TweetWorker.set_last_execution(start - 1.second)
+  end
+
+  def get_range
+    trigger_success SimulatedTime.get_range
   end
 
   def get_time
@@ -12,5 +19,9 @@ class WebsocketController < WebsocketRails::BaseController
     SimulatedTime.set(message[:time])
     WebsocketRails[:time].trigger(:simulated_time_updated, SimulatedTime.get)
     trigger_success SimulatedTime.get
+  end
+
+  def get_categories
+    trigger_success Category.order(:id).all.to_json
   end
 end

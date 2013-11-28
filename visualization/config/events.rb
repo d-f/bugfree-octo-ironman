@@ -18,12 +18,15 @@ WebsocketRails::EventMap.describe do
   # The above will handle an event triggered on the client like `product.new`.
   #
 
-  namespace :ui do
-    subscribe :update_range, :to => WebsocketController, :with_method => :update_range
-  end
-
   namespace :time do
     subscribe :get, :to => WebsocketController, :with_method => :get_time
     subscribe :set, :to => WebsocketController, :with_method => :set_time
+
+    subscribe :get_range, :to => WebsocketController, :with_method => :get_range
+    subscribe :set_range, :to => WebsocketController, :with_method => :set_range
+  end
+
+  namespace :categories do
+    subscribe :get, :to => WebsocketController, :with_method => :get_categories
   end
 end

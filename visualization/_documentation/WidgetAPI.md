@@ -27,17 +27,22 @@ The WebSockets implementation used will be [WebsocketRails](https://github.com/w
 
 Generally, you should subscribe to the time-range event:
 
-    var ui_channel = dispatcher.subscribe('ui');
+    var ui_channel = dispatcher.subscribe('time');
 
-    ui_channel.bind('time_range_updated', function(range) {
+    ui_channel.bind('range_updated', function(range) {
         console.log(range.start); // Unix timestamp (seconds)
-        console.log(range.end); // Unix timestamp (seconds)
     });
 
-Updating the time range (this will automatically result in a `time_range_updated` event as defined above:
+Updating the time range (this will automatically result in a `time.range_updated` event as defined above). Tweets are then displayed `range` seconds into the past.
 
-    // Again, UNIX timestamps in seconds
-    dispatcher.trigger('ui.update_range', {start: 123, end: 456})
+    var range = 4 * 3600; // 4 hours in seconds
+    dispatcher.trigger('time.set_range', {range: range})
+
+You can also just "get" the range:
+
+    dispatcher.trigger('time.get_range', {}, function(response) {
+            console.log(response.range) # => range in seconds
+        })
 
 To be notified of new tweets, you can do this:
 
@@ -67,3 +72,9 @@ Tweet objects have the following structure:
         category_id: 5,
         category_name: "Nonsense"
     }
+
+All categories can be retrieved as follows:
+
+    dispatcher.trigger('categories.get', {}, function(response) {
+        console.log(response) # => [{id: 5, name: "some category"}]
+    })

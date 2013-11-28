@@ -3,9 +3,30 @@ nv.addGraph(function() {
                 .showDistX(true)
                 .showDistY(true)
                 .color(d3.scale.category10().range());
+    chart.useVoronoi(false);
 
-    //chart.xAxis.tickFormat(d3.format('.02f'))
+
+    var tweet_container = $('#timeline ul.chats');
+    tweet_container.closest('.selected-tweet').hide();
+    chart.scatter.dispatch.on('elementClick', function(e) {
+        console.log('element: ' + e.value);
+        console.dir(e.point);
+        console.dir(this);
+
+        var tweet = JST["tweet"]({
+            name: e.point.x.author,
+            body: e.point.x.text
+        });
+
+        tweet_container.html(tweet);
+        tweet_container.closest('.selected-tweet').show()
+
+    });
+
     chart.xAxis.tickFormat(function(d) { return moment(d).format("DD.MM. HH:mm"); })
+    chart.x(function(d) {
+        return moment(d.x.timestamp);
+    })
     chart.yAxis.tickFormat(d3.format('.02f'))
 
     var svg = d3.select('#timeline').append('svg')
@@ -13,7 +34,14 @@ nv.addGraph(function() {
     var width = container.width();
     svg.attr({width: width, height: 0.618*width});
 
-    var data = [{key: "Group 0", values: []}];
+    var data = [
+        {key: "Help Request", values: []},
+        {key: "Support Request", values: []},
+        {key: "Support Offer", values: []},
+        {key: "Information Request", values: []},
+        {key: "Information Offer", values: []},
+        {key: "Trashtalk", values: []}
+    ];
 
     svg
         .datum(data)
@@ -24,10 +52,9 @@ nv.addGraph(function() {
     tweets_channel = dispatcher.subscribe('tweets')
     tweets_channel.bind("new", function(tweets) {
         for(var i=0; i<tweets.length; i++) {
-
-            data[0].values.push({
-                y: 0,
-                x: moment(tweets[i].timestamp),
+            data[tweets[i].category_id].values.push({
+                y: Math.random(),
+                x: tweets[i],
                 size: 10,
                 series: 0
             })

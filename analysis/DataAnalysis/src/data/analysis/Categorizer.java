@@ -26,14 +26,14 @@ public class Categorizer implements ICategorizer {
 				categories.values().toArray(new String[categories.values().size()]), NGRAM_SIZE);
 		for (int i = 0; i < socialMessages.length; ++i) {
 			if (socialMessages[i] != null) {
-				System.out.print("\n[" + i + "] Training on " + categories.get(socialMessages[i].getCategory()));
+//				System.out.print("\n[" + i + "] Training on " + categories.get(socialMessages[i].getCategory()));
 				Classification classification = new Classification(categories.get(socialMessages[i].getCategory()));
 				Classified<CharSequence> classified = new Classified<CharSequence>(socialMessages[i].getText(),
 						classification);
 				classifier.handle(classified);
 			}
 		}
-		System.out.println();
+//		System.out.println();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -57,16 +57,11 @@ public class Categorizer implements ICategorizer {
 			jc = compiledClassifier.classify(socialMessage.getText());
 			for (Map.Entry<Integer, String> entry : categories.entrySet()) {
 				if (entry.getValue().equalsIgnoreCase(jc.bestCategory())) {
+					socialMessage.setConfidence(String.valueOf(jc.conditionalProbability(0)));
 					socialMessage.setCategory(entry.getKey());
 				}
 			}
 
-			// ConfusionMatrix confMatrix = evaluator.confusionMatrix();
-			// System.out.println("Total Accuracy: " +
-			// confMatrix.totalAccuracy());
-			//
-			// System.out.println("\nFULL EVAL");
-			// System.out.println(evaluator);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

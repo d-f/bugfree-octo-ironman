@@ -1,5 +1,4 @@
-import DBAdapter.*;
-import DBAdapter.Key;
+import DBAdapter.Tables;
 import data.analysis.SocialMessage;
 import org.jooq.*;
 import org.jooq.impl.DSL;
@@ -107,8 +106,6 @@ public class DBAdapterImpl {
         return result;
     }
 
-    //TODO  input:
-    //      output:
     public Map<String, String> getKoordinatenVonLocId(String locId) {
         open();
         Result result = create
@@ -130,14 +127,13 @@ public class DBAdapterImpl {
     public List<Map<String, Object>> getKoordinatenVonOrt(String ort){
         open();
         List<Map<String, Object>> result = create
-                .select(fieldByName("zip_coordinates", Key.zc_location_name),fieldByName("zip_coordinates","zc_lon"),fieldByName("zip_coordinates","zc_lat"))
+                .select(fieldByName("zip_coordinates","zc_location_name"),fieldByName("zip_coordinates","zc_lon"),fieldByName("zip_coordinates","zc_lat"))
                 .from(tableByName("zip_coordinates"))
                 .where(fieldByName("zip_coordinates","zc_location_name").eq(ort))
                 .groupBy(fieldByName("zip_coordinates","zc_location_name"))
                 .fetchMaps();
         System.out.println(result);
         close();
-
         return result;
     }
 
@@ -224,7 +220,7 @@ public class DBAdapterImpl {
 
     public List<Map<String, Object>> getInfoZurLocId(int loc_id) {
         open();
-        Result<Record2<Object, Object>> result = create
+        List<Map<String, Object>> result = create
                 .select(fieldByName("geodb_type_names","name"), fieldByName("geodb_textdata","text_val"))
                 .from(tableByName("geodb_textdata"))
                 .leftOuterJoin(tableByName("geodb_type_names"))
@@ -232,10 +228,10 @@ public class DBAdapterImpl {
                         .equal(fieldByName("geodb_type_names", "type_id")))
                 .where(fieldByName("loc_id")
                         .equal(loc_id))
-                .fetch();
+                .fetchMaps();
         close();
         System.out.println(result);
-        return null;
+        return result;
     }
 
     public List<Map<String, Object>> getLocIdZumOrt(String ort) {

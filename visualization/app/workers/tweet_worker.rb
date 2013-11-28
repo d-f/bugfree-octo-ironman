@@ -9,14 +9,18 @@ class TweetWorker
       start = SimulatedTime.now
     end
 
-    tweets = Tweet.where("timestamp >= ? and timestamp < ?", start, endd).to_a
+    tweets = Tweet.includes(:categories, :information).where("timestamp >= ? and timestamp < ?", start, endd).to_a
+    #tweets = [Tweet.includes(:categories, :information).first(:offset => rand(Tweet.count))] # for testing
+    tweets = tweets.map do |t|
+      t.enriched
+    end
+
     if tweets.length > 0
       WebsocketRails[:tweets].trigger(:new, tweets)
     end
 
     TweetWorker.set_last_execution
   end
-
 
 
   @@last_execution_key = "tweet_worker:last_execution"
@@ -33,8 +37,8 @@ class TweetWorker
       DateTime.parse(time)
     end
 
-    def set_last_execution
-      time = SimulatedTime.now
+    def set_last_execution(given=nil)
+      time = given || SimulatedTime.now
       $redis.set(@@last_execution_key, time)
       time
     end

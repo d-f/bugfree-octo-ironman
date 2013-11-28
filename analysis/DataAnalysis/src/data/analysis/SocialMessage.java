@@ -10,6 +10,8 @@ public class SocialMessage {
 	private Timestamp timestamp;
 	private String geolocation;
 	private int category;
+	private String confidence;
+	private String place;
 
 	public BigDecimal getId() {
 		return id;
@@ -53,8 +55,25 @@ public class SocialMessage {
 
 	@Override
 	public String toString() {
-		return new String("[id]" + id + "; [timestamp]" + timestamp + "; [category]" + category + "; [geolocation]"
-				+ geolocation + "; [text]" + text);
+		return new String("[id]" + id + "; [timestamp]" + timestamp
+				+ "; [category]" + category + "; [geolocation]" + geolocation
+				+ "; [place]" + place + "; [text]" + text);
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
+
+	public String getConfidence() {
+		return confidence;
+	}
+
+	public void setConfidence(String confidence) {
+		this.confidence = confidence;
 	}
 
 }

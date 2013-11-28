@@ -13,6 +13,7 @@
 //= require websocket_rails/main
 //= require jquery
 //= require jquery_ujs
+//= require hamlcoffee
 //= require ../../../vendor/assets/javascripts/bootstrap.js
 //= require ../../../vendor/assets/javascripts/d3.js
 //= require ../../../vendor/assets/javascripts/nv.d3.js
@@ -22,15 +23,18 @@
 //= require ./widgets/widget_manager.js.coffee
 //= require ./widgets/streamgraph.js.coffee
 //= require ./widgets/nvd_timeline.js
+//= require ./widgets/tweet_text.js
+//= require ./global.js.coffee
+//= require ./time_display.js.coffee
 //
-// require_tree .
-
 // Load javascript classes required for the Leaflet map widget.
 //= require ../../../vendor/assets/javascripts/leaflet/leaflet.js
 //= require ./widgets/map/LinkedList.js
 //= require ./widgets/map/DataReceiver.js
 //= require ./widgets/map/DataManager.js
 //= require ./widgets/map/MapControl.js
-//= require ./widgets/map/SettingsListener.js
+//= require ./widgets/map/CategorySelection.js
 //= require ./widgets/map/Initializer.js
+//
+//= require_tree ./templates
 

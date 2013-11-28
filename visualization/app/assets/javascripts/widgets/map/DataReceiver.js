@@ -1,17 +1,38 @@
-/** An object capable of receiving stateful notifications through 
- *  a web socket and re-broadcasting them to subscribed clients. */
+/** Middleware layer for the Leaflet map widget. Decouples map logic 
+ *  from the communication (=> Websockets, MySQL, ...). */
 function DataReceiver () {
 
   // var dispatcher = new WebSocketRails ("localhost:3001/websocket");
   var sbsc_newpost = new Array ();
   
   
+  
   /** Subscribes at the Rails websocket dispatcher and distributes the 
    *  callback events among the clients. */
   dispatcher.subscribe("tweets").bind ("new", function (data) {
-    //console.log ("[DataReceiver] Received new post from WSR.");
     for (var i = 0; i < sbsc_newpost.length; i ++) sbsc_newpost[i] (data);
   });
+  
+
+  
+  this.getCategories = function () {
+
+    var categories = new Array ();
+    dispatcher.trigger ('categories.get', {}, function (cats) {
+      
+      //for (var i = 0; i < cats.length; i ++) {
+        //for (var cat in cats) alert (cat['name']);
+        //cats[i]["name"]
+      //}
+    });
+    
+    
+    alert (categories);
+    //alert ("hey"+categories.length);
+    //for (var i = 0; i < categories.length; i ++) alert (categories[i]);
+    //[{id: 5, name: "some category"}]  
+  }
+  
   
   
   /** Registers a client for notification in case of a new post.
@@ -20,6 +41,21 @@ function DataReceiver () {
     console.log ("[DataReceiver] Client subscribed for new-post-event.");
     sbsc_newpost.push (callback);
   }  
+  
+  
+  
+  this.categorySelectionChanged = function (data) {
+    alert ("CSC: "+data);
+    //mapControl.setLayer ();
+    // 
+    //dispatcher.trigger (...);
+  }
+  
+  
+  this.timeIntervalChanged = function () {
+    // Parsing etc.
+    //dispatcher.trigger (...);
+  }
 }
 
 

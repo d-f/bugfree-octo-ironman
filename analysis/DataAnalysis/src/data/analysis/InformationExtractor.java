@@ -3,10 +3,13 @@ package data.analysis;
 import java.sql.Timestamp;
 import java.util.Map;
 
+import DBAdapter.DBAdapterImpl;
+
 public class InformationExtractor {
 
 	private IDataSource twitterData;
 	private ICategorizer twitterCategorizer;
+	private LocationFromText locator;
 	private SocialMessage[] twitterTrainMessages;
 	private SocialMessage[] twitterMessages;
 	private Map<Integer, String> categories;
@@ -21,16 +24,20 @@ public class InformationExtractor {
 	}
 
 	public InformationExtractor() {
+		DBAdapterImpl.getInstance(TwitterDataAnalyser.USER, TwitterDataAnalyser.PASSWORD, "jdbc:mysql://" + TwitterDataAnalyser.HOST + "/" + TwitterDataAnalyser.DATABASE);
 		twitterData = new TwitterDataAnalyser();
 		twitterCategorizer = new Categorizer();
+		locator = new LocationFromText();
 
 		System.out.print("determine categories...");
 		categories = twitterData.getCategories(TABLE_TWITTER_CATEGORIES);
 		System.out.println(" done.");
 
 		System.out.print("load training data...");
-		twitterTrainMessages = new SocialMessage[categories.size() * TRAIN_MESSAGE_COUNT];
-		twitterTrainMessages = twitterData.getTrainMessages(TABLE_TWITTER_TRAINING, categories, TRAIN_MESSAGE_COUNT);
+		twitterTrainMessages = new SocialMessage[categories.size()
+				* TRAIN_MESSAGE_COUNT];
+		twitterTrainMessages = twitterData.getTrainMessages(
+				TABLE_TWITTER_TRAINING, categories, TRAIN_MESSAGE_COUNT);
 		System.out.println(" done.");
 
 		System.out.print("train classifier...");
@@ -38,30 +45,36 @@ public class InformationExtractor {
 		System.out.println(" done.");
 
 		System.out.print("fetching test data... ");
-		twitterMessages = twitterData.getSocialMessages(TABLE_TWITTER_STURM, new Timestamp(0L), new Timestamp(
-				Long.MAX_VALUE));
-		System.out.println(" done. " + twitterMessages.length + " messages found.");
+		twitterMessages = twitterData.getSocialMessages(TABLE_TWITTER_STURM,
+				new Timestamp(0L), new Timestamp(Long.MAX_VALUE));
+//				new Timestamp(1382875200000L), new Timestamp(1382878800000L));
+		System.out.println(" done. " + twitterMessages.length
+				+ " messages found.");
 
-		int[] sm = {42,1337,88,69,7,13,1900,1985,1986,263,611,1701,666,314,1024,2048,512,90,60,925};
-		
-		for (int i : sm) {
-			twitterCategorizer.handle(twitterMessages[i]);
-			System.out.println(twitterMessages[i].getCategory() + ";" + twitterMessages[i].getText());
+		System.out.print("locate messages... ");
+		for (int i = 0; i < twitterMessages.length; ++i) {
+			if ((i % 25) == 0) {
+				System.out.println();
+			}
+			System.out.printf("[%04d] ", i);
+			locator.getLocation(twitterMessages[i]);
 		}
+		System.out.println(" done.");
 		
-//		System.out.println("categorize messages...");
+//		System.out.print("categorize messages... ");
 //		for (int i = 0; i < twitterMessages.length; ++i) {
-//			if ((i % 100) == 0 || i == twitterMessages.length - 1) {
-//				System.out.println(i);
+//			if ((i % 25) == 0) {
+//				System.out.println();
 //			}
+//			System.out.printf("[%04d] ", i);
 //			twitterCategorizer.handle(twitterMessages[i]);
 //		}
 //		System.out.println(" done.");
 
-//		System.out.println("save metadata...");
-//		twitterData.storeMetadata(twitterMessages);
-//		System.out.println(" done.");
-//
+		System.out.println("save metadata...");
+		twitterData.storeMetadata(twitterMessages);
+		System.out.println(" done.");
+
 	}
 
 }
