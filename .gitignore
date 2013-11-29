@@ -77,7 +77,6 @@ $RECYCLE.BIN/
 # Visual Paradigm
 *.vpp~*
 *.vpp.*
-*.pdf
 
-# Auto-generated tex files
-content.tex
+analysis/Grafiken/.~lock.Präsentation_Termin_2.pptx#
+analysis/Grafiken/Präsentation_Termin_2.pptx

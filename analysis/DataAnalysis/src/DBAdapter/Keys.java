@@ -84,4 +84,7 @@ public class Keys {
 		public static final org.jooq.UniqueKey<DBAdapter.tables.records.TweetsSyriaRecord> KEY_TWEETS_SYRIA_PRIMARY = createUniqueKey(DBAdapter.tables.TweetsSyria.TWEETS_SYRIA, DBAdapter.tables.TweetsSyria.TWEETS_SYRIA.ID);
 		public static final org.jooq.UniqueKey<DBAdapter.tables.records.TweetsSyriaRecord> KEY_TWEETS_SYRIA_ID_UNIQUE = createUniqueKey(DBAdapter.tables.TweetsSyria.TWEETS_SYRIA, DBAdapter.tables.TweetsSyria.TWEETS_SYRIA.ID);
 	}
+
+
 }
+

@@ -1,9 +1,9 @@
 package data.analysis;
 
+import DBAdapter.DBAdapterImpl;
+
 import java.sql.Timestamp;
 import java.util.Map;
-
-import DBAdapter.DBAdapterImpl;
 
 public class InformationExtractor {
 
