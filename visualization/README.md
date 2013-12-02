@@ -22,3 +22,17 @@ All other dependencies will be installed through `bundler`, by running `bundle` 
 1. Start the rails websocket server by running `bundle exec rake websocket_rails:start_server`
 
 
+
+
+## Misc
+
+The following can be run to generate test time data for the tweet table:
+
+    start = DateTime.parse("2013-10-27 13:25:00")
+    Tweet.order(:id).each_with_index do |item,index|
+        item.timestamp = start
+        start += [3,5,10,15].sample.seconds
+        item.save
+    end
+
+
