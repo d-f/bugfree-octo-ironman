@@ -1,3 +1,4 @@
 class Category < ActiveRecord::Base
-  has_and_belongs_to_many :tweets
+  has_many :categories_tweets
+  has_many :tweets, :through => :categories_tweets
 end

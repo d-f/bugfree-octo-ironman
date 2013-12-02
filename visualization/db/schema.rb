@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131104170000) do
+ActiveRecord::Schema.define(version: 20131202092637) do
 
   create_table "categories", force: true do |t|
     t.string "name", limit: 200
@@ -20,8 +20,9 @@ ActiveRecord::Schema.define(version: 20131104170000) do
   add_index "categories", ["name"], name: "index_categories_on_name", unique: true, using: :btree
 
   create_table "categories_tweets", id: false, force: true do |t|
-    t.integer "tweet_id",    limit: 8, null: false
-    t.integer "category_id",           null: false
+    t.integer "tweet_id",            limit: 8,                          null: false
+    t.integer "category_id",                                            null: false
+    t.decimal "category_confidence",           precision: 10, scale: 0
   end
 
   create_table "information", primary_key: "tweet_id", force: true do |t|

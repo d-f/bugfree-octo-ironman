@@ -1,6 +1,7 @@
 class Tweet < ActiveRecord::Base
   has_one :information
-  has_and_belongs_to_many :categories
+  has_many :categories_tweets
+  has_many :categories, :through => :categories_tweets
   has_and_belongs_to_many :tags
 
   def enriched
