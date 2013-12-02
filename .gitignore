@@ -80,3 +80,5 @@ $RECYCLE.BIN/
 
 analysis/Grafiken/.~lock.Präsentation_Termin_2.pptx#
 analysis/Grafiken/Präsentation_Termin_2.pptx
+
+*.sql
