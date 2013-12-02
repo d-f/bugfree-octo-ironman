@@ -53,9 +53,9 @@ nv.addGraph(function() {
     tweets_channel.bind("new", function(tweets) {
         for(var i=0; i<tweets.length; i++) {
             data[tweets[i].category_id].values.push({
-                y: Math.random(),
+                y: tweets[i].category_confidence,
                 x: tweets[i],
-                size: 10,
+                size: 5,
                 series: 0
             })
 

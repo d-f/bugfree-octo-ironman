@@ -10,6 +10,7 @@ class Tweet < ActiveRecord::Base
     category = categories.first
     data[:category_id] = category.try!(:id)
     data[:category_name] = category.try!(:name)
+    data[:category_confidence] = categories_tweets[0].try!(:category_confidence).to_f
 
     data[:geolocation] = nilWhenEmpty(geolocation) || nilWhenEmpty(information.try!(:geolocation))
     data[:geolocation] = geolocation_to_json(data[:geolocation])
