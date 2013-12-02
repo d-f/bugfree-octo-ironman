@@ -15,6 +15,10 @@ class Tweet < ActiveRecord::Base
     data[:geolocation] = geolocation_to_json(data[:geolocation])
     data[:place] = nilWhenEmpty(place) || nilWhenEmpty(information.try!(:place))
 
+    data["hashtags"] = (data["hashtags"].split(",")
+      .map { |x| (x.strip[1..-1] || "").downcase })
+      .reject { |y| y.length < 1 }
+
     data
   end
 

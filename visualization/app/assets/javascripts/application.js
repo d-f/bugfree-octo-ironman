@@ -24,6 +24,7 @@
 //= require ./widgets/streamgraph.js.coffee
 //= require ./widgets/nvd_timeline.js
 //= require ./widgets/tweet_text.js
+//= require ./widgets/hash_cloud.js
 //= require ./global.js.coffee
 //= require ./time_display.js.coffee
 //
