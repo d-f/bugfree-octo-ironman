@@ -1,16 +1,27 @@
-import DBAdapter.Tables;
-import data.analysis.SocialMessage;
-import org.jooq.*;
-import org.jooq.impl.DSL;
+package DBAdapter;
+
+import static org.jooq.impl.DSL.fieldByName;
+import static org.jooq.impl.DSL.tableByName;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.jooq.impl.DSL.fieldByName;
-import static org.jooq.impl.DSL.tableByName;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SQLDialect;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
+
+import data.analysis.SocialMessage;
 
 /**
  * Created with IntelliJ IDEA. User: denisf Date: 12.11.13 Time: 22:22 To change
