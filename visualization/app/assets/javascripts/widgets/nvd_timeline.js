@@ -6,7 +6,7 @@ nv.addGraph(function() {
     chart.useVoronoi(false);
 
 
-    var tweet_container = $('#timeline ul.chats');
+    var tweet_container = $('.selected-tweet ul.chats');
     tweet_container.closest('.selected-tweet').hide();
     chart.scatter.dispatch.on('elementClick', function(e) {
         console.log('element: ' + e.value);
