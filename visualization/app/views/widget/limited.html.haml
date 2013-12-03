@@ -29,12 +29,21 @@
     .widget
       .widget-header
         .title
-          Karte
+          Map
       .widget-body
         #map
 
 .row
-  .col-md-6
+  .col-md-3
+    .widget
+      .widget-header
+        .title
+          Selection Settings
+      .widget-body
+        #selection_category
+        #selection_timerange
+        
+  .col-md-9
     .widget
       .widget-header
         .title
@@ -42,7 +51,8 @@
       .widget-body
         %ul#tweets.chats.scroll-container
 
-  .col-md-6
+.row
+  .col-md-5
     .widget
       .widget-header
         .title

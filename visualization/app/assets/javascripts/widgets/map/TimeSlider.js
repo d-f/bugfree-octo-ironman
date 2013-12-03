@@ -5,8 +5,7 @@
 function TimeSlider (container, initialMin, initialMax) {
     
   // HTML insertion of headline and slider div in supplied container.
-  var htmlcode = "<h4>Time Interval Selection:</h4>                     "+
-                 "<div class='layout-slider'>                           "+
+  var htmlcode = "<div class='layout-slider'>                           "+
                  "  <input id='Slider' type='slider' name='area' value='"+
                      initialMin+";"+initialMax+"' />                    "+
                  "</div>                                                ";   
@@ -18,26 +17,32 @@ function TimeSlider (container, initialMin, initialMax) {
     from         : 0, 
     to           : 240, 
     heterogeneity: ['20/15', '40/30', '60/60', '80/120'],
-    scale: ['jetzt', '15min', '30min', '1&nbsp;Std.', '2&nbsp;Std.', '4&nbsp;Std.'],
+    scale        : ['now', '15min', '30min', '1h', '2h', '4h'],
     limits       : false, 
     smooth       : false,
     step         : 1, 
     dimension    : '&nbsp;min', 
     skin         : "round_plastic",
-    callback     : notifyListeners (valueStr), 
+    callback     : function (valueStr) {notifyListeners (valueStr);}  
   });        
 
 
 
+
+  /* Subscribe and Callback Functions                                      */
+  /*************************************************************************/ 
+
   var subscribers = new Array ();  // Stores the attached listeners.
+  
   
   /** Registers a new listener for event callbacks.
    * @param callback The callback function to be executed. */
-  this.registerCallback = function (callback) {
+  this.subscribe = function (callback) {
     subscribers.push (callback);
   }
   
-  /** Notifies all attached listeners of a time range selction change.
+  
+  /** Notifies all attached listeners of a time range selection change.
    * @param valueStr The new interval selection. */
   function notifyListeners (valueStr) {
    var values = valueStr.split (";");
