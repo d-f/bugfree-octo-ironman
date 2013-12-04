@@ -51,12 +51,6 @@ public class LocationFromText {
 				String city = cities.next();
 				String geo	= DBAdapterImpl.placesAndCoordinates.get(city);
 				citiesTrie.addEntry(new DictionaryEntry<String>(city,geo));
-				
-				if(i < 100){
-					System.out.println(city+" "+geo);
-					i++;
-				}
-				
 			}
 			
 		}
@@ -166,7 +160,7 @@ public class LocationFromText {
 	    message.setPlace(place);
 	    message.setGeolocation(bestMatch);
 	    
-	    System.out.println("Found "+place+" "+bestMatch+" in "+message.getText());
+	    //System.out.println("Found "+place+" "+bestMatch+" in "+message.getText());
 	    
 		return message;
 	}
