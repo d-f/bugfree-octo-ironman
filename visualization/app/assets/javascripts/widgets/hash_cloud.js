@@ -52,7 +52,7 @@
 
         g.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
             .selectAll('circle')
-                .attr("r", function(d) { console.log(d); return d.r; })
+                .attr("r", function(d) { return d.r; })
                 .style("fill", function(d) { return color(d.name); })
 
     }
@@ -94,7 +94,7 @@
             }
 
         }
-        console.log(data);
+        //console.log(data);
         update(data);
         //svg.datum(data).call(chart)
     });
