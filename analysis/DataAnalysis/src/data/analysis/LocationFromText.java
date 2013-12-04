@@ -36,13 +36,29 @@ public class LocationFromText {
 		if(citiesTrie == null){//Create TrieDictionary for lingpipe
 			citiesTrie = new TrieDictionary<String>();
 			
-			Iterator<String> cities = DBAdapterImpl.alleStaedte.iterator();
+			/*Iterator<String> cities = DBAdapterImpl.alleStaedte.iterator();
 			
 			while(cities.hasNext()){
 				String cityName = cities.next();
 				
 				citiesTrie.addEntry(new DictionaryEntry<String>(cityName, cityName));//Value and Category set to CityName
+			}*/
+			
+			Iterator<String> cities = DBAdapterImpl.placesAndCoordinates.keySet().iterator();
+			int i = 0;
+			
+			while(cities.hasNext()){
+				String city = cities.next();
+				String geo	= DBAdapterImpl.placesAndCoordinates.get(city);
+				citiesTrie.addEntry(new DictionaryEntry<String>(city,geo));
+				
+				if(i < 100){
+					System.out.println(city+" "+geo);
+					i++;
+				}
+				
 			}
+			
 		}
 		
 		chunker = new ApproxDictionaryChunker(citiesTrie, tokenizerFactory, editDistance, maxDistance);
@@ -99,7 +115,7 @@ public class LocationFromText {
 		
 		if(!message.getPlace().equalsIgnoreCase("null")){//Place, but no Geolocation
 			
-			String geolocation = getGeolocationForPlace(message.getGeolocation());
+			String geolocation = DBAdapterImpl.placesAndCoordinates.get(message.getPlace());//getGeolocationForPlace(message.getGeolocation());
 			
 			if(geolocation == null){
 				message.setGeolocation("null");//No Geolocation found for given place, try to find a place from text
@@ -145,7 +161,12 @@ public class LocationFromText {
 	       //System.out.printf("%15s  %15s   %8.1f\n", cs.subSequence(chunk.start(),chunk.end()), chunk.type(), chunk.score());//TODO REMOVE
 	    }
 	    
-	    message.setGeolocation(getGeolocationForPlace(bestMatch));
+	    //message.setGeolocation(getGeolocationForPlace(bestMatch));
+	    String place = citiesTrie.categoryEntryIt(bestMatch).next().phrase();
+	    message.setPlace(place);
+	    message.setGeolocation(bestMatch);
+	    
+	    System.out.println("Found "+place+" "+bestMatch+" in "+message.getText());
 	    
 		return message;
 	}

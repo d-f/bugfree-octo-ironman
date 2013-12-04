@@ -1,8 +1,11 @@
 package DBAdapter;
 
 import data.analysis.SocialMessage;
+
 import org.jooq.*;
 import org.jooq.impl.DSL;
+
+import com.mysql.jdbc.Statement;
 
 import java.sql.*;
 import java.util.*;
@@ -27,8 +30,12 @@ public class DBAdapterImpl {
         this.userName = name;
         this.password = pass;
         this.url = url;
-        if (alleStaedte.isEmpty()) {
+        /*if (alleStaedte.isEmpty()) {
             getAlleStaedteNamen();
+        }*/
+        
+        if(placesAndCoordinates.isEmpty()){
+        	loadAllGeoAndCities();
         }
     }
 
@@ -140,6 +147,45 @@ public class DBAdapterImpl {
         return result;
     }
 
+    public static HashMap<String, String> placesAndCoordinates = new HashMap<String, String>();
+    
+    
+    private void loadAllGeoAndCities(){
+    	
+    	/*
+    	  	SELECT gl.loc_id, geodb_textdata.text_val, coord.lat, coord.lon
+		   	FROM geodb_textdata
+			LEFT JOIN geodb_locations gl ON gl.loc_id = geodb_textdata.loc_id
+			LEFT JOIN geodb_coordinates coord ON geodb_textdata.loc_id = coord.loc_id
+			WHERE geodb_textdata.text_type =500100000
+			AND  gl.loc_type =100600000
+		*/
+    	
+    	try {
+			beginTransaktion();
+			
+			Statement statement = (Statement) conn.createStatement();
+
+			ResultSet resultSet = statement.executeQuery(
+					"SELECT geodb_textdata.text_val, coord.lat, coord.lon "
+					+ "FROM geodb_textdata "
+					+ "LEFT JOIN geodb_locations gl ON gl.loc_id = geodb_textdata.loc_id "
+					+ "LEFT JOIN geodb_coordinates coord ON geodb_textdata.loc_id = coord.loc_id "
+					+ "WHERE geodb_textdata.text_type=500100000 "
+					+ "AND  gl.loc_type=100800000");
+
+			while (resultSet.next()) {
+				placesAndCoordinates.put(resultSet.getString(1), "GeoLocation{latitude="+resultSet.getString(2)+", longitude="+resultSet.getString(3)+"}");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			endTransaktion();
+		}
+    	
+    	
+    }
 
     //Sollte nicht genutzt werden! Stattdessen auf die Klassenvariable zugreifen!! Diese wird
     //bereits beim Initialisieren der Instanz befuellt
