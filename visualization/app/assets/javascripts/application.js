@@ -30,11 +30,17 @@
 //
 // Load javascript classes required for the Leaflet map widget.
 //= require ../../../vendor/assets/javascripts/leaflet/leaflet.js
+//= require ../../../vendor/assets/javascripts/jslider/jshashtable-2.1_src.js
+//= require ../../../vendor/assets/javascripts/jslider/tmpl.js
+//= require ../../../vendor/assets/javascripts/jslider/jquery.dependClass-0.1.js
+//= require ../../../vendor/assets/javascripts/jslider/draggable-0.1.js
+//= require ../../../vendor/assets/javascripts/jslider/jquery.slider.js     
 //= require ./widgets/map/LinkedList.js
 //= require ./widgets/map/DataReceiver.js
 //= require ./widgets/map/DataManager.js
 //= require ./widgets/map/MapControl.js
 //= require ./widgets/map/CategorySelection.js
+//= require ./widgets/map/TimeSlider.js
 //= require ./widgets/map/Initializer.js
 //
 //= require_tree ./templates

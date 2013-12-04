@@ -5,11 +5,18 @@
 }
 
 .layout-slider { 
-  padding: 10px 0px 45px 0px;
+  padding: 25px 12px;
 }
 
 .container h3 {
   margin-bottom: 20px;
+}
+
+.map_popup td {
+  vertical-align: top;
+  padding-left:   8px;
+  border-top:     1px solid lightgrey;
+  border-bottom:  1px solid lightgrey;
 }
 
 #options h4 {
