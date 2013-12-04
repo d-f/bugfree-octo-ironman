@@ -13,12 +13,12 @@ function TimeSlider (container, initialMin, initialMax) {
     
     
   // Creates the slider and places it in the previous built div.
-  jQuery("#Slider").slider ({ 
-    from         : 0, 
-    to           : 240, 
-    heterogeneity: ['20/15', '40/30', '60/60', '80/120'],
-    scale        : ['now', '15min', '30min', '1h', '2h', '4h'],
-    limits       : false, 
+  jQuery("#Slider").slider ({
+    from         : 0,
+    to           : 10,
+    //heterogeneity: ['100/1'],
+    scale        : ['now', '10min'],
+    limits       : false,
     smooth       : false,
     step         : 1, 
     dimension    : '&nbsp;min', 

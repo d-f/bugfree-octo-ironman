@@ -57,7 +57,7 @@ function DataReceiver () {
    * @param data JSON containing the minimum and maximum interval values. */
   this.timeIntervalChanged = function (data) {
     console.log ("[DataReceiver] Time interval changed to ["+data.minimum+" , "+data.maximum+"]");
-    dispatcher.trigger ("time.set_range", {range: data.maximum});   
+    dispatcher.trigger ("time.set_range", {range: parseInt(data.maximum) * 60});
   }
 
 
