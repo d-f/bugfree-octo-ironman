@@ -16,47 +16,56 @@ function CategorySelection (container, receiver) {
   function updateCategories (catUpdate) {
     var category = catUpdate ['category'];
     var counter  = catUpdate ['counter'];    
-    
+
+  
     // If the category doesn't exist, create it!
-    if (comboboxes[category] == null) {  
-    
-      // First of all, we make an entry in our javascript structure.
-      comboboxes[category] = {
-        "category" : category,
-        "counter"  : counter,
-        "checked"  : false,           
-        "update"   : function ($cnt) {
-          this.counter = $cnt;
-          document.getElementById('badge-'+this.category).innerHTML = $cnt;            
-        },
-      };   
+    if (comboboxes[category] == null) {     
       
-      // After that, we create the HTML checkbox and insert it in the DOM.
+      // First of all, we create the HTML checkbox and insert it in the DOM.
       var html = 
-        "<span class='input-group-addon'>                                               "+
-        "  <input type='checkbox' name='cbs' value='"+category+"' id='cb-"+category+"'/>"+
-        "</span>                                                                        "+
-        "<li class='list-group-item'>                                                   "+
-        "  <span class='badge' id='badge-"+category+"'>"+counter+"</span>"+category+"   "+
-        "</li>                                                                          ";        
+        "<span class='input-group-addon'>                                          "+
+        "  <input type='checkbox' name='cbs' value='"+category+"'                  "+
+        "   id='cb-"+category+"' checked='checked'/>                               "+
+        "</span>                                                                   "+
+        "<li class='list-group-item'>                                              "+
+        "  <span class='badge' id='badge-"+category+"'>"+counter+"</span>"+category +
+        "</li>                                                                     ";        
       //TODO Maybe we should also add the category icon or some sort function.   
       var newEntry = document.createElement ("div");
       newEntry.innerHTML = html; 
       newEntry.className = "input-group"; 
       document.getElementById("comboboxes").appendChild (newEntry);
-       
+
+      // After that, we make an entry in our javascript structure.
+      comboboxes[category] = {
+        "category" : category,
+        "counter"  : counter,
+        "checked"  : false,
+        "division" : newEntry,          
+        "update"   : function ($cnt) {
+          this.counter = $cnt;
+          document.getElementById('badge-'+this.category).innerHTML = $cnt;            
+        },
+      };              
       
       // Then we link the HTML onclick handler to our notify function.
       document.getElementById("cb-"+category).onclick = function() {      
         notifyListeners (this.value, this.checked);
       };         
+      
+      // Check the checkbox per default. Ugly timeout needed. Don't ask, why ...
+      setTimeout (function () {notifyListeners (category, true);}, 100);
+ 
     }
+
     
     // Otherwise, we have to change its counter (or delete it, if zero).  
     else {
       if (counter != 0) comboboxes[category].update (counter);
       else {
-        //TODO Rubbish, delete it!
+        var div = comboboxes[category]['division'];
+        document.getElementById("comboboxes").removeChild (div);
+        comboboxes[category] = null;
       }
     }
   }
