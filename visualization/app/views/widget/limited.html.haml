@@ -8,18 +8,20 @@
       %ul.chats
       .widget
         .controls.widget-body
+          .btn.btn-success.correct
+            Korrekt kategorisiert
           .btn-group
             %button.btn.btn-danger.dropdown-toggle{:type => "button", :"data-toggle" => "dropdown"}
               Rekategorisieren
               %span.caret
             %ul.dropdown-menu
               %li
-                %a Help Request
-                %a Support Request
-                %a Support Offer
-                %a Information Request
-                %a Information offer
-                %a Trashtalk
+                %a.recategorize Help Request
+                %a.recategorize Support Request
+                %a.recategorize Support Offer
+                %a.recategorize Information Request
+                %a.recategorize Information offer
+                %a.recategorize Trashtalk
 
 
 .row

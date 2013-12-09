@@ -7,7 +7,8 @@ nv.addGraph(function() {
 
 
     var tweet_container = $('.selected-tweet ul.chats');
-    tweet_container.closest('.selected-tweet').hide();
+    var selected_tweet = tweet_container.closest('.selected-tweet');
+    selected_tweet.hide();
     chart.scatter.dispatch.on('elementClick', function(e) {
         console.log('element: ' + e.value);
         console.dir(e.point);
@@ -19,9 +20,25 @@ nv.addGraph(function() {
         });
 
         tweet_container.html(tweet);
-        tweet_container.closest('.selected-tweet').show()
+        selected_tweet.show()
 
     });
+
+    selected_tweet.find('a.recategorize').on('click', function() {
+        $('.top-right').notify({
+            message: { text: 'Tweet erfolgreich rekategorisiert!' }
+        }).show();
+        tweet_container.closest('.selected-tweet').hide();
+    });
+
+    selected_tweet.find('.correct').on('click', function() {
+        $('.top-right').notify({
+            message: { text: 'Tweet als korrekt kategorisiert markiert!' }
+        }).show();
+        tweet_container.closest('.selected-tweet').hide();
+    });
+
+
 
     chart.xAxis.tickFormat(function(d) { return moment(d).format("DD.MM. HH:mm"); })
     chart.x(function(d) {
