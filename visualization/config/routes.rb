@@ -54,9 +54,9 @@ Visualization::Application.routes.draw do
   #     resources :products
   #   end
 
-  root 'widget#limited'
+  root 'login#index'
 
-  get 'widgets' => 'widget#index'
+  get 'widgets' => 'widget#limited'
 
   get 'settings' => 'settings#index', :as => :settings
 

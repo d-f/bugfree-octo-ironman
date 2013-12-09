@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+  <!--[if lt IE 7]>
+    <html class="lt-ie9 lt-ie8 lt-ie7" lang="en">
+  <![endif]-->
+
+  <!--[if IE 7]>
+    <html class="lt-ie9 lt-ie8" lang="en">
+  <![endif]-->
+
+  <!--[if IE 8]>
+    <html class="lt-ie9" lang="en">
+  <![endif]-->
+
+  <!--[if gt IE 8]>
+    <!-->
+    <html lang="en">
+    <!--
+  <![endif]-->
+
+  <head>
+    <meta charset="utf-8">
+    <title>Dashboard</title>
+
+
+
+
+    <%= stylesheet_link_tag "application", media: "all" %>
+
+
+
+  </head>
+
+  <body>
+
+    <!-- Main Container start -->
+    <div class="main-container">
+      <div class="row">
+        <form action="/widgets" class="login-wrapper" method="post">
+          <div class="header">
+            <div class="row">
+              <div class="col-md-12">
+                <h3>Login</h3>
+                <p></p>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="row">
+              <div class="col-md-12 col-sm-12">
+                <input class="input col-md-12 col-sm-12 email" id="" name="" placeholder="example@mailll.com" required="required" type="email" value="mi-projekt@haw-hamburg.de">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 col-sm-12">
+                <input class="input col-md-12 col-sm-12 password" id="" name="" placeholder="********" required="required" type="password" value="12345667">
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a href="/widgets" class="btn btn-danger">Login</a>
+            <a class="link" href="#">Passwort vergessen?</a>
+            <div class="clearfix"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Main Container end -->
+
+
+  </body>
+</html>
