@@ -61,8 +61,18 @@
   };
 
   Notification.prototype.show = function () {
-    if(this.options.fadeOut.enabled)
-      this.$note.delay(this.options.fadeOut.delay || 3000).fadeOut('slow', $.proxy(onClose, this));
+    if(this.options.fadeOut.enabled) {
+      //this.$note.delay(this.options.fadeOut.delay || 3000);
+
+      var that = this;
+      setTimeout(function() {
+        that.$note.css('opacity', 0);
+        setTimeout(function() {
+          $(that.$note).remove();
+        }, 150);
+      }, 3000);
+
+    }
 
     this.$element.append(this.$note);
     this.$note.alert();
