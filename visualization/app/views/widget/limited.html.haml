@@ -10,6 +10,17 @@
         .controls.widget-body
           .btn.btn-success.correct
             Korrekt kategorisiert
+
+          .btn-group
+            %button.btn.btn-warning.dropdown-toggle{:type => "button", :"data-toggle" => "dropdown"}
+              Zuweisen
+              %span.caret
+            %ul.dropdown-menu
+              %li
+                %a.assign Peter Hansen
+                %a.assign Joachim Müller
+                %a.assign Jan Wolff
+
           .btn-group
             %button.btn.btn-danger.dropdown-toggle{:type => "button", :"data-toggle" => "dropdown"}
               Rekategorisieren

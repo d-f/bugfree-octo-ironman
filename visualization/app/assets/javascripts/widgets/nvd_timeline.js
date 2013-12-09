@@ -31,6 +31,13 @@ nv.addGraph(function() {
         tweet_container.closest('.selected-tweet').hide();
     });
 
+    selected_tweet.find('a.assign').on('click', function() {
+        $('.top-right').notify({
+            message: { text: 'Tweet zugewiesen!' }
+        }).show();
+        tweet_container.closest('.selected-tweet').hide();
+    });
+
     selected_tweet.find('.correct').on('click', function() {
         $('.top-right').notify({
             message: { text: 'Tweet als korrekt kategorisiert markiert!' }
