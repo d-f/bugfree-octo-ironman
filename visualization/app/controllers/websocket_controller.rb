@@ -12,6 +12,7 @@ class WebsocketController < WebsocketRails::BaseController
   end
 
   def get_time
+    SimulatedTime.set("2013-10-27 13:23:00")
     trigger_success SimulatedTime.get
   end
 
