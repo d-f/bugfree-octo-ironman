@@ -12,10 +12,11 @@
  *= require ../../../vendor/assets/stylesheets/icons.css
  *= require ../../../vendor/assets/stylesheets/bootstrap-datetimepicker.css
  *= require ../../../vendor/assets/stylesheets/nv.d3.css
+ *= require ../../../vendor/assets/stylesheets/bootstrap-notify.css
  *= require_self
  *= require ./slick-admin
- **= require ./global
- 
+ *= require ./global
+
  * Map and slider stylesheets:
  *= require ./mapdesign.css
  *= require ../../../vendor/assets/stylesheets/leaflet/leaflet.css

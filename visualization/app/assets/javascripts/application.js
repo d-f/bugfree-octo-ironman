@@ -19,6 +19,7 @@
 //= require ../../../vendor/assets/javascripts/nv.d3.js
 //= require ../../../vendor/assets/javascripts/moment.js
 //= require ../../../vendor/assets/javascripts/bootstrap-datetimepicker.js
+//= require ../../../vendor/assets/javascripts/bootstrap-notify.js
 //
 //= require ./widgets/widget_manager.js.coffee
 //= require ./widgets/streamgraph.js.coffee
@@ -34,7 +35,7 @@
 //= require ../../../vendor/assets/javascripts/jslider/tmpl.js
 //= require ../../../vendor/assets/javascripts/jslider/jquery.dependClass-0.1.js
 //= require ../../../vendor/assets/javascripts/jslider/draggable-0.1.js
-//= require ../../../vendor/assets/javascripts/jslider/jquery.slider.js     
+//= require ../../../vendor/assets/javascripts/jslider/jquery.slider.js
 //= require ./widgets/map/LinkedList.js
 //= require ./widgets/map/DataReceiver.js
 //= require ./widgets/map/DataManager.js
