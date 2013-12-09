@@ -10,9 +10,9 @@ nv.addGraph(function() {
     var selected_tweet = tweet_container.closest('.selected-tweet');
     selected_tweet.hide();
     chart.scatter.dispatch.on('elementClick', function(e) {
-        console.log('element: ' + e.value);
-        console.dir(e.point);
-        console.dir(this);
+        // console.log('element: ' + e.value);
+        // console.dir(e.point);
+        // console.dir(this);
 
         var tweet = JST["tweet"]({
             name: e.point.x.author,
