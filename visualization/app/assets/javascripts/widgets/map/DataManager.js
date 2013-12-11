@@ -45,9 +45,9 @@ function DataManager (receiver) {
       // Select the marker icon for that category.
       var icon;
       switch (category) {
-        case "information_offer"  : icon = icon_information; break;
-        case "information_request": icon = icon_request;     break;
-        case "help_request"       : icon = icon_help;        break;
+        case "Information Offer"  : icon = icon_information; break;
+        case "Information Request": icon = icon_request;     break;
+        case "Help Request"       : icon = icon_help;        break;
         default                   : icon = icon_other;       break;
       }
 
